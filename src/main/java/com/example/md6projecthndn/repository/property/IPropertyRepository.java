@@ -38,45 +38,38 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
     Page<Property> findAllByRoomType(RoomType roomType, Pageable pageable);
 
 
-    @Query("SELECT p FROM Property p WHERE p.bedrooms >= :bedrooms " +
-            "AND p.propertyType = :propertyType " +
-            "AND p.bathrooms >= :bathrooms " +
-            "AND p.address LIKE %:address% " +
-            "AND p.pricePerNight BETWEEN :minPrice AND :maxPrice " +
-            "AND NOT EXISTS (SELECT b FROM Booking b WHERE b.property.id = p.id " +
-            "AND b.checkInDate <= :checkOutDate " +
-            "AND b.checkOutDate >= :checkInDate)")
-    Page<Property> findAvailableProperties(@Param("bedrooms") int bedrooms,
-                                           @Param("propertyType") PropertyType propertyType,
-                                           @Param("bathrooms") int bathrooms,
-                                           @Param("address") String address,
-                                           @Param("minPrice") double minPrice,
-                                           @Param("maxPrice") double maxPrice,
-                                           @Param("checkInDate") LocalDate checkInDate,
-                                           @Param("checkOutDate") LocalDate checkOutDate,
-                                           Pageable pageable);
-
-    @Query("SELECT p FROM Property p WHERE p.bedrooms >= :bedrooms " +
-            "AND p.bathrooms >= :bathrooms " +
-            "AND p.address LIKE %:address% " +
-            "AND p.pricePerNight BETWEEN :minPrice AND :maxPrice " +
-            "AND NOT EXISTS (SELECT b FROM Booking b WHERE b.property.id = p.id " +
-            "AND b.checkInDate <= :checkOutDate " +
-            "AND b.checkOutDate >= :checkInDate)")
-    Page<Property> findAvailablePropertiesNotType(@Param("bedrooms") int bedrooms,
-                                           @Param("bathrooms") int bathrooms,
-                                           @Param("address") String address,
-                                           @Param("minPrice") double minPrice,
-                                           @Param("maxPrice") double maxPrice,
-                                           @Param("checkInDate") LocalDate checkInDate,
-                                           @Param("checkOutDate") LocalDate checkOutDate,
-                                           Pageable pageable);
+    @Query("SELECT p FROM Property p WHERE "
+            + "(:name IS NULL OR p.name LIKE %:name%) AND "
+            + "(:address IS NULL OR p.address LIKE %:address%) AND "
+            + "(:minPrice IS NULL OR p.pricePerNight >= :minPrice) AND "
+            + "(:maxPrice IS NULL OR p.pricePerNight <= :maxPrice) AND "
+            + "(:propertyType IS NULL OR p.propertyType = :propertyType) AND "
+            + "(:roomType IS NULL OR p.roomType = :roomType) AND "
+            + "(:minBedrooms IS NULL OR p.bedrooms >= :minBedrooms) AND "
+            + "(:maxBedrooms IS NULL OR p.bedrooms <= :maxBedrooms) AND "
+            + "(:minBathrooms IS NULL OR p.bathrooms >= :minBathrooms) AND "
+            + "(:maxBathrooms IS NULL OR p.bathrooms <= :maxBathrooms) AND "
+            + "(:checkInDate IS NULL OR :checkOutDate IS NULL OR NOT EXISTS ("
+            + "    SELECT b FROM Booking b WHERE b.property.id = p.id "
+            + "    AND b.checkInDate <= :checkOutDate "
+            + "    AND b.checkOutDate >= :checkInDate))")
+    Page<Property> searchProperties(
+            @Param("name") String name,
+            @Param("address") String address,
+            @Param("minPrice") Double minPrice,
+            @Param("maxPrice") Double maxPrice,
+            @Param("propertyType") PropertyType propertyType,
+            @Param("roomType") RoomType roomType,
+            @Param("minBedrooms") Integer minBedrooms,
+            @Param("maxBedrooms") Integer maxBedrooms,
+            @Param("minBathrooms") Integer minBathrooms,
+            @Param("maxBathrooms") Integer maxBathrooms,
+            @Param("checkInDate") LocalDate checkInDate,
+            @Param("checkOutDate") LocalDate checkOutDate,
+            Pageable pageable
+    );
 
 
-
-
-
-    @Query(nativeQuery = true, value = "SELECT MAX(p.price_per_night) FROM properties p")
-    Double getMaxPrice();
+    List<Property> findByOwnerId(Long ownerId);
 
 }
