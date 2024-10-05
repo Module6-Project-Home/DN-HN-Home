@@ -1,19 +1,21 @@
 package com.example.md6projecthndn.controller;
 
 
-import com.example.md6projecthndn.model.entity.property.PropertyImage;
+import com.example.md6projecthndn.model.entity.property.*;
 
-import com.example.md6projecthndn.model.entity.property.Property;
-import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,6 +108,30 @@ public class PropertyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @GetMapping("/search")
+    public Page<Property> searchProperties(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) PropertyType propertyType,
+            @RequestParam(required = false) RoomType roomType,
+            @RequestParam(required = false) Integer minBedrooms,
+            @RequestParam(required = false) Integer maxBedrooms,
+            @RequestParam(required = false) Integer minBathrooms,
+            @RequestParam(required = false) Integer maxBathrooms,
+            @RequestParam(required = false) LocalDate checkInDate,
+            @RequestParam(required = false) LocalDate checkOutDate,
+            Pageable pageable
+    ) {
+        return propertyService.searchProperties(
+                name, address, minPrice, maxPrice, propertyType, roomType,
+                minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
+                checkInDate, checkOutDate, pageable);
+    }
+
+
 
 
 

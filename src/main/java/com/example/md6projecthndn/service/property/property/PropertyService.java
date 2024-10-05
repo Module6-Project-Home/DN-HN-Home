@@ -1,9 +1,7 @@
 package com.example.md6projecthndn.service.property.property;
 
 
-import com.example.md6projecthndn.model.entity.property.Property;
-import com.example.md6projecthndn.model.entity.property.PropertyDTO;
-import com.example.md6projecthndn.model.entity.property.PropertyImage;
+import com.example.md6projecthndn.model.entity.property.*;
 import com.example.md6projecthndn.repository.booking.IStatusRepository;
 import com.example.md6projecthndn.repository.property.IPropertyImageRepository;
 import com.example.md6projecthndn.repository.property.IPropertyRepository;
@@ -11,10 +9,14 @@ import com.example.md6projecthndn.repository.property.IPropertyTypeRepository;
 import com.example.md6projecthndn.repository.property.IRoomTypeRepository;
 import com.example.md6projecthndn.repository.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -113,8 +115,30 @@ public class PropertyService implements IPropertyService {
 
     }
 
+    @Override
+    public Page<Property> searchProperties(String name,
+                                           String address,
+                                           Double minPrice,
+                                           Double maxPrice,
+                                           PropertyType propertyType,
+                                           RoomType roomType,
+                                           Integer minBedrooms,
+                                           Integer maxBedrooms,
+                                           Integer minBathrooms,
+                                           Integer maxBathrooms,
+                                           LocalDate checkInDate,
+                                           LocalDate checkOutDate,
+                                           Pageable pageable) {
+        return propertyRepository.searchProperties(
+                name, address, minPrice, maxPrice, propertyType, roomType,
+                minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
+                checkInDate, checkOutDate, pageable);
+    }
 
-
+    @Override
+    public List<Property> findByOwnerId(Long ownerId) {
+        return propertyRepository.findByOwnerId(ownerId);
+    }
 
     // Cập nhật thông tin bất động sản
     @Transactional
@@ -137,9 +161,5 @@ public class PropertyService implements IPropertyService {
 
 
 
-    // Xóa bất động sản
-    @Transactional
-    public void deleteProperty(Long id) {
-        propertyRepository.deleteById(id);
-    }
+
 }
