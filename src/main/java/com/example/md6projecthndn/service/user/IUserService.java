@@ -1,13 +1,15 @@
 package com.example.md6projecthndn.service.user;
 
-import com.example.md6projecthndn.model.User;
-import com.example.md6projecthndn.service.GenerateService;
-import org.springframework.security.core.userdetails.UserDetails;
 
-public interface IUserService extends GenerateService<User> {
-//    UserDetails loadUserByUsername(String username);
 
-    User findByUsername(String username);
+import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.service.IGenerateService;
 
-    String registerNewUser(User user);
+import java.util.Optional;
+
+public interface IUserService extends IGenerateService<User> {
+    Optional<User> findByUsername(String username);
+
+    User findUserById (Long id);
+
 }
