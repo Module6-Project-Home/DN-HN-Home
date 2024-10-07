@@ -54,7 +54,7 @@ public class SecurityConfig {
 //                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/login", "/api/users/register", "/api/home").permitAll()
+                                .requestMatchers("/api/login", "/api/users/**", "/api/home", "/").permitAll()
                                 .requestMatchers("/product").authenticated()
                 )
                 .build();

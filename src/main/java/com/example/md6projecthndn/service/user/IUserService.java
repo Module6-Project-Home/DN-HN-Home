@@ -12,4 +12,5 @@ public interface IUserService extends IGenerateService<User> {
 
     User findUserById (Long id);
 
+    String registerNewUser(User user);
 }

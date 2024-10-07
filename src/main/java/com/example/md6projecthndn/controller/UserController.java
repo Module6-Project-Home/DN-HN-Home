@@ -1,6 +1,6 @@
 package com.example.md6projecthndn.controller;
 
-import com.example.md6projecthndn.model.User;
+import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.user.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -8,21 +8,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final IUserService userService;
+
     public UserController(IUserService userService) {
         this.userService = userService;
     }
 
-//    @GetMapping("/list")
-//    public ResponseEntity<?> getUserList() {
-//        List<User> users = userService.findAll();
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
+    //test
+    @GetMapping("/list")
+    public ResponseEntity<?> getUserList() {
+        Iterable<User> users = userService.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?> testResponse() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result) {
@@ -47,6 +53,7 @@ public class UserController {
         if (registrationResult.equals("User registered successfully.")) {
             return ResponseEntity.ok(registrationResult);
         } else {
+            System.out.println("Registration result is: " + registrationResult);
             return ResponseEntity.badRequest().body(registrationResult);
         }
     }

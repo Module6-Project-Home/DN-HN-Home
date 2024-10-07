@@ -7,6 +7,7 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,31 +27,48 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Tên người dùng không được để trống")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Tên người dùng chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String username;
 
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 6, max = 32, message = "Mật khẩu phải có độ dài từ 6 đến 32 ký tự")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Mật khẩu chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String password;
 
+    @Transient
     private String confirmPassword;
 
+    @Email
+    @NotNull
     private String email;
 
     private String fullName;
 
+    @NotNull
     private String phoneNumber;
 
-    @JsonManagedReference
+    private String avatar;
+
+    @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
     private Set<Property> properties;
 
+
+    @JsonManagedReference("user-booking")
     @OneToMany(mappedBy = "guest")
     private Set<Booking> bookings;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserStatus> userStatuses;
+
+    @JsonManagedReference("user-review")
     @OneToMany(mappedBy = "guest")
     private Set<Review> reviews;
-
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
@@ -60,6 +78,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    private boolean upgradeRequested;
     // Constructors, getters and setters
 }
 

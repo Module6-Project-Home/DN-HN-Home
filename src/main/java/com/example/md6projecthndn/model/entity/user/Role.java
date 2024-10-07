@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.model.entity.user;
 
 
+import com.example.md6projecthndn.model.dto.RoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,14 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Enumerated(EnumType.STRING) // Enum sẽ được lưu dưới dạng chuỗi trong cột name
+    @Column(length = 20)
+    private USER_ROLE name;
 
+    public enum USER_ROLE {
+        ROLE_ADMIN,
+        ROLE_USER,
+        ROLE_HOST
+    }
     // Constructors, getters and setters
 }

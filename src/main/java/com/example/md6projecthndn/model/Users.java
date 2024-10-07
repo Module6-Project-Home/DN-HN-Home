@@ -35,8 +35,7 @@
 //
 //    @ManyToMany(fetch = FetchType.EAGER) // ManyToMany sẽ tạo thêm 1 bảng nữa
 //    private Set<Role> roles;
-//
-//    @ManyToMany(fetch = FetchType.EAGER)
+////    @ManyToMany(fetch = FetchType.EAGER)
 //    private Set<Status> statuses;
 //
 //    private String fullName;

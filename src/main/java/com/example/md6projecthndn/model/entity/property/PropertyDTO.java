@@ -1,5 +1,6 @@
 package com.example.md6projecthndn.model.entity.property;
 
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

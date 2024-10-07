@@ -3,6 +3,7 @@ package com.example.md6projecthndn.model.entity.booking;
 
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,8 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @JsonBackReference("user-booking")
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private User guest;
@@ -49,4 +52,3 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
-
