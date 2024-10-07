@@ -25,8 +25,8 @@ public class BookingStatusService implements IBookingStatusService {
     }
 
     @Override
-    public Optional<BookingStatus> findById(Long id) {
-        return bookingStatusRepository.findById(id);
+    public BookingStatus findById(Long id) {
+        return bookingStatusRepository.findById(id).orElse(null);
     }
 
     @Override

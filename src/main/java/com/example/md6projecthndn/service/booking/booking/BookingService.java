@@ -38,8 +38,8 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public Optional<Booking> findById(Long id) {
-        return bookingRepository.findById(id);
+    public Booking findById(Long id) {
+        return bookingRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -49,19 +49,24 @@ public class BookingService implements IBookingService {
 
     @Override
     public void updatePropertyStatusIfCheckOutDatePassed() {
-        // Lấy danh sách các booking có ngày trả phòng nhỏ hơn hoặc bằng ngày hiện tại
+        // Get a list of bookings with a check-out date less than or equal to the current date
         List<Booking> bookings = bookingRepository.findByCheckOutDateBefore(LocalDate.now().plusDays(1));
 
-        // Lặp qua các booking và cập nhật trạng thái property
+        // Loop through the bookings and update the property status
         for (Booking booking : bookings) {
             Property property = booking.getProperty();
-            Status availableStatus = statusService.findById(1L).orElseThrow(() -> new RuntimeException("Status not found"));
 
+            // Find the available status
+            Status availableStatus = statusService.findById(1L);
+            if (availableStatus == null) {
+                throw new RuntimeException("Status not found"); // Handle the case when status is not found
+            }
+
+            // Update the property status
             property.setStatus(availableStatus);
             propertyService.save(property);
         }
     }
-
 
     @Override
     public List<Booking> findOverlappingBookings(Long propertyId, LocalDate startDate, LocalDate endDate) {

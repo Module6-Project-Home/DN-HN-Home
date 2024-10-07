@@ -19,8 +19,8 @@ public class RoomTypeService implements IRoomTypeService {
     }
 
     @Override
-    public Optional<RoomType> findById(Long id) {
-        return roomTypeRepository.findById(id);
+    public RoomType findById(Long id) {
+        return roomTypeRepository.findById(id).orElse(null);
     }
 
     @Override
