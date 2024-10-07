@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.service.role;
 
 
+import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.repository.user.IRoleRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Role findByName(String name) {
+    public Role findByName(ROLENAME name) {
         return roleRepository.findByName(name);
     }
 
@@ -27,8 +28,8 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Optional<Role> findById(Long id) {
-        return Optional.empty();
+    public Role findById(Long id) {
+        return roleRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -26,8 +26,8 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Optional<Review> findById(Long id) {
-        return reviewRepository.findById(id);
+    public Review findById(Long id) {
+        return reviewRepository.findById(id).orElse(null);
     }
 
     @Override
