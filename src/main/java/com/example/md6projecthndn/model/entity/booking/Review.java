@@ -3,6 +3,7 @@ package com.example.md6projecthndn.model.entity.booking;
 
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +23,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private User guest;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;

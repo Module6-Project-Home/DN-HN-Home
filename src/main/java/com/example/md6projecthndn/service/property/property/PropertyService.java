@@ -116,7 +116,7 @@ public class PropertyService implements IPropertyService {
     }
 
     @Override
-    public Page<Property> searchProperties(String name,
+    public Iterable<Property> searchProperties(String name,
                                            String address,
                                            Double minPrice,
                                            Double maxPrice,
@@ -127,12 +127,11 @@ public class PropertyService implements IPropertyService {
                                            Integer minBathrooms,
                                            Integer maxBathrooms,
                                            LocalDate checkInDate,
-                                           LocalDate checkOutDate,
-                                           Pageable pageable) {
+                                           LocalDate checkOutDate) {
         return propertyRepository.searchProperties(
                 name, address, minPrice, maxPrice, propertyType, roomType,
                 minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                checkInDate, checkOutDate, pageable);
+                checkInDate, checkOutDate);
     }
 
     @Override
