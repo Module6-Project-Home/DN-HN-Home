@@ -20,8 +20,8 @@ public class PropertyImageService implements IPropertyImageService {
     }
 
     @Override
-    public Optional<PropertyImage> findById(Long id) {
-        return propertyImageRepository.findById(id);
+    public PropertyImage findById(Long id) {
+        return propertyImageRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -20,8 +20,8 @@ public class PropertyTypeService implements IPropertyTypeService {
     }
 
     @Override
-    public Optional<PropertyType> findById(Long id) {
-        return propertyTypeRepository.findById(id);
+    public PropertyType findById(Long id) {
+        return propertyTypeRepository.findById(id).orElse(null);
     }
 
     @Override

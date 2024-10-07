@@ -7,13 +7,15 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -36,19 +38,11 @@ public class User {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Mật khẩu chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String password;
 
-    @Transient
-    private String confirmPassword;
-
-    @Email
-    @NotNull
     private String email;
 
     private String fullName;
 
-    @NotNull
     private String phoneNumber;
-
-    private String avatar;
 
     @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
@@ -58,7 +52,6 @@ public class User {
     @JsonManagedReference("user-booking")
     @OneToMany(mappedBy = "guest")
     private Set<Booking> bookings;
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
@@ -79,6 +72,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     private boolean upgradeRequested;
+
     // Constructors, getters and setters
 }
 

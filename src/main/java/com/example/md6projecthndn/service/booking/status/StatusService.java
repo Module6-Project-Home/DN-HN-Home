@@ -18,9 +18,9 @@ public class StatusService implements IStatusService {
     }
 
     @Override
-    public Optional<Status> findById(Long id) {
+    public Status findById(Long id) {
 
-        return statusRepository.findById(id);
+        return statusRepository.findById(id).orElse(null);
     }
 
     @Override

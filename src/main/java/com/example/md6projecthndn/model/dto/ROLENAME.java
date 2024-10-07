@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.model.dto;
 
-public enum RoleEnum {
+public enum ROLENAME {
+    ROLE_ADMIN,
     ROLE_USER,
-    ROLE_ADMIN
+    ROLE_HOST
 }

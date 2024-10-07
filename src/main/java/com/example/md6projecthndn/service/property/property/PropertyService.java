@@ -57,8 +57,7 @@ public class PropertyService implements IPropertyService {
                 .pricePerNight(propertyDTO.getPricePerNight())
                 .status(statusRepository.findByName(propertyDTO.getStatus())
                         .orElseThrow(() -> new RuntimeException("Status not found")))
-                .owner(userRepository.findByUsername(propertyDTO.getOwner())
-                        .orElseThrow(() -> new RuntimeException("Owner not found")))
+                .owner(userRepository.findByUsername(propertyDTO.getOwner()))
                 .build();
 
         // Lưu Property vào database trước
@@ -91,8 +90,8 @@ public class PropertyService implements IPropertyService {
 
 
     @Override
-    public Optional<Property> findById(Long id) {
-        return propertyRepository.findById(id);
+    public Property findById(Long id) {
+        return propertyRepository.findById(id).orElse(null);
     }
 
 
@@ -154,7 +153,7 @@ public class PropertyService implements IPropertyService {
         property.setBathrooms(propertyDTO.getBathrooms());
         property.setDescription(propertyDTO.getDescription());
         property.setPricePerNight(propertyDTO.getPricePerNight());
-        property.setOwner(userRepository.findByUsername(propertyDTO.getOwner()).orElse(null));
+        property.setOwner(userRepository.findByUsername(propertyDTO.getOwner()));
         property.setStatus(statusRepository.findByName(propertyDTO.getStatus()).orElse(null));
         return propertyRepository.save(property);
     }
