@@ -7,12 +7,14 @@ import com.example.md6projecthndn.model.entity.booking.Status;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -68,7 +70,7 @@ public class Property {
     @Column(name = "price_per_night", nullable = false)
     private double pricePerNight; // Giá tiền theo ngày (VNĐ) (*)
 
-    @JsonBackReference
+    @JsonBackReference("user-property")
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

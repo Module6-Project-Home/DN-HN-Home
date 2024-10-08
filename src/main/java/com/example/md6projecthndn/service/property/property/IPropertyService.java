@@ -17,7 +17,8 @@ import java.util.Optional;
 public interface IPropertyService extends IGenerateService<Property> {
     Property addPropertyPost(PropertyDTO propertyDTO);
 
-    Optional<Property> findById(Long id);
+    Property findById(Long id);
+
 
     public Iterable<Property> searchProperties(String name,
                                            String address,

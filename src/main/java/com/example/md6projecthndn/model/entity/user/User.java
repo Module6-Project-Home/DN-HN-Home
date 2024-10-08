@@ -7,11 +7,16 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -26,8 +31,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @NotBlank(message = "Tên người dùng không được để trống")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Tên người dùng chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String username;
 
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 6, max = 32, message = "Mật khẩu phải có độ dài từ 6 đến 32 ký tự")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Mật khẩu chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String password;
 
     private String email;
@@ -36,16 +47,22 @@ public class User {
 
     private String phoneNumber;
 
-    @JsonManagedReference
+    @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
     private Set<Property> properties;
 
+
+    @JsonManagedReference("user-booking")
     @OneToMany(mappedBy = "guest")
     private Set<Booking> bookings;
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+
+    @JsonManagedReference("user-review")
     @OneToMany(mappedBy = "guest")
     private Set<Review> reviews;
 
@@ -57,6 +74,8 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    private boolean upgradeRequested;
 
     // Constructors, getters and setters
 }

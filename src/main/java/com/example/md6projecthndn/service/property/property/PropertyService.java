@@ -57,8 +57,7 @@ public class PropertyService implements IPropertyService {
                 .pricePerNight(propertyDTO.getPricePerNight())
                 .status(statusRepository.findByName(propertyDTO.getStatus())
                         .orElseThrow(() -> new RuntimeException("Status not found")))
-                .owner(userRepository.findByUsername(propertyDTO.getOwner())
-                        .orElseThrow(() -> new RuntimeException("Owner not found")))
+                .owner(userRepository.findByUsername(propertyDTO.getOwner()))
                 .build();
 
         // Lưu Property vào database trước
@@ -91,8 +90,8 @@ public class PropertyService implements IPropertyService {
 
 
     @Override
-    public Optional<Property> findById(Long id) {
-        return propertyRepository.findById(id);
+    public Property findById(Long id) {
+        return propertyRepository.findById(id).orElse(null);
     }
 
 
@@ -139,24 +138,6 @@ public class PropertyService implements IPropertyService {
         return propertyRepository.findByOwnerId(ownerId);
     }
 
-    // Cập nhật thông tin bất động sản
-    @Transactional
-    public Property updateProperty(Long id, PropertyDTO propertyDTO) {
-        Property property = propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bất động sản không tồn tại"));
-
-        property.setName(propertyDTO.getName());
-        property.setPropertyType(propertyTypeRepository.findByName(propertyDTO.getPropertyType()).orElse(null));
-        property.setRoomType(roomTypeRepository.findByName(propertyDTO.getRoomType()).orElse(null));
-        property.setAddress(propertyDTO.getAddress());
-        property.setBedrooms(propertyDTO.getBedrooms());
-        property.setBathrooms(propertyDTO.getBathrooms());
-        property.setDescription(propertyDTO.getDescription());
-        property.setPricePerNight(propertyDTO.getPricePerNight());
-        property.setOwner(userRepository.findByUsername(propertyDTO.getOwner()).orElse(null));
-        property.setStatus(statusRepository.findByName(propertyDTO.getStatus()).orElse(null));
-        return propertyRepository.save(property);
-    }
 
 
 

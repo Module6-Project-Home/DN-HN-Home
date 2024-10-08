@@ -23,7 +23,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference
+    @JsonBackReference("user-review")
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private User guest;

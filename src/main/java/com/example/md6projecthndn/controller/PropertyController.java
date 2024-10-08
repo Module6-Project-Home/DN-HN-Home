@@ -6,14 +6,15 @@ import com.example.md6projecthndn.model.entity.property.*;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
+
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,8 +32,8 @@ public class PropertyController {
     @PostMapping
     public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO propertyDTO) {
         String username = propertyDTO.getOwner(); // Giả sử bạn đã cung cấp owner trong PropertyDTO
-        Optional<User> owner = userService.findByUsername(username);
-        if (owner.isEmpty()) {
+        User owner = userService.findByUsername(username);
+        if (owner==null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
@@ -75,9 +76,9 @@ public class PropertyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDTO> findRPropertyById(@PathVariable Long id) {
-        Optional<Property> property = propertyService.findById(id);
-        if (property.isPresent()) {
-            Property p = property.get();
+        Property p = propertyService.findById(id);
+        if (p!= null) {
+
             PropertyDTO dto = new PropertyDTO();
 
             // Set các trường cho DTO
