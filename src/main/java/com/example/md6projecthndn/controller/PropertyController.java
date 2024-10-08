@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.controller;
 
 
+import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.property.*;
 
 import com.example.md6projecthndn.model.entity.user.User;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -106,7 +108,7 @@ public class PropertyController {
     }
 
     @GetMapping("/search")
-    public Page<Property> searchProperties(
+    public ResponseEntity<List<PropertyDTO  >> searchProperties(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) Double minPrice,
@@ -118,12 +120,35 @@ public class PropertyController {
             @RequestParam(required = false) Integer minBathrooms,
             @RequestParam(required = false) Integer maxBathrooms,
             @RequestParam(required = false) LocalDate checkInDate,
-            @RequestParam(required = false) LocalDate checkOutDate,
-            Pageable pageable
+            @RequestParam(required = false) LocalDate checkOutDate
     ) {
-        return propertyService.searchProperties(
+        List<Property> properties = (List<Property>) propertyService.searchProperties(
                 name, address, minPrice, maxPrice, propertyType, roomType,
                 minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                checkInDate, checkOutDate, pageable);
+                checkInDate, checkOutDate );
+        List<PropertyDTO> propertyDTOs = properties.stream().map(p -> {
+            PropertyDTO dto = new PropertyDTO();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setAddress(p.getAddress());
+            dto.setPricePerNight(p.getPricePerNight());
+            dto.setOwner(p.getOwner().getUsername());
+            dto.setBathrooms(p.getBathrooms());
+            dto.setBedrooms(p.getBedrooms());
+            dto.setStatus(p.getStatus().getName());
+            dto.setDescription(p.getDescription());
+            dto.setPropertyType(p.getPropertyType().getName());
+            dto.setRoomType(p.getRoomType().getName());
+
+            // Thêm danh sách ảnh
+            List<String> imageUrls = p.getImages().stream()
+                    .map(PropertyImage::getImageUrl)
+                    .toList();
+            dto.setImageUrls(imageUrls);
+
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(propertyDTOs);
     }
 }
