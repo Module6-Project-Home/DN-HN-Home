@@ -28,6 +28,7 @@ public class Review {
     @JoinColumn(name = "guest_id")
     private User guest;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;
