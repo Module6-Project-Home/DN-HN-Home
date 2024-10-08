@@ -21,6 +21,10 @@ public class Role {
     @Column(length = 20)
     private ROLENAME name;
 
+//    public enum USER_ROLE {
+//        ROLE_ADMIN,
+//        ROLE_USER,
+//        ROLE_HOST
+//    }
     // Constructors, getters and setters
-
 }

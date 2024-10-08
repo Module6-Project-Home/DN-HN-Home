@@ -48,4 +48,3 @@ public class Review {
 
     // Constructors, getters and setters
 }
-
