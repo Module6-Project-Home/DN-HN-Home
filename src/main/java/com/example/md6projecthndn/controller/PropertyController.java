@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/properties") // Đường dẫn gốc cho controller
+@RequestMapping("/api/properties")
 public class PropertyController {
     @Autowired
     private IPropertyService propertyService;
