@@ -1,4 +1,4 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.user;
 
 
 
@@ -10,7 +10,7 @@ import com.example.md6projecthndn.config.jwt.JwtResponse;
 import com.example.md6projecthndn.config.service.JwtService;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.user.IUserService;
-import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 
 @RestController

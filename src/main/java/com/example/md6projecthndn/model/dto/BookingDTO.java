@@ -39,13 +39,6 @@ public class BookingDTO implements Validator {
     public void validate(Object target, Errors errors) {
         BookingDTO bookingDTO = (BookingDTO) target;
 
-//        if (bookingDTO.getProperty() != null && bookingDTO.getProperty().getStatus() != null) {
-//            Long statusId = bookingDTO.getProperty().getStatus().getId();
-//            if (statusId == null || statusId != 1L) {
-//                errors.rejectValue("property", "property.status.invalid", "HomeStay đã có người đặt.");
-//                return;
-//            }
-//        }
 
         if (bookingDTO.getProperty() != null && bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
             if (!this.overlappingBookings.isEmpty()) {

@@ -2,6 +2,7 @@ package com.example.md6projecthndn.config;
 
 
 import com.example.md6projecthndn.config.jwt.JwtAuthenticationTokenFilter;
+
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,7 +71,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/login","/api/properties","/api/property-types","/api/room-types","/api/properties/**").permitAll()
+                                .requestMatchers("/api/login", "/api/properties","/api/properties/**", "/api/property-types", "/api/room-types","/api/bookings", "/**").permitAll()
                                 .requestMatchers("/api/users/request-upgrade").hasAnyRole("USER", "ADMIN") // Thêm quyền cho user
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/user/**").hasRole("USER")
@@ -93,4 +94,3 @@ public class SecurityConfig {
         return source;
     }
 }
-

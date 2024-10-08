@@ -1,4 +1,4 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.user;
 
 
 import com.example.md6projecthndn.model.entity.user.User;
