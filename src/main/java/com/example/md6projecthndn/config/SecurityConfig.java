@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/login").permitAll()
+                                .requestMatchers("/api/login", "/api/logout").permitAll()
                                 .requestMatchers("/api/users/request-upgrade").hasAnyRole("USER", "ADMIN") // Thêm quyền cho user
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/user/**").hasRole("USER")

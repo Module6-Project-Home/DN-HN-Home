@@ -7,7 +7,7 @@ package com.example.md6projecthndn.controller;
 
 
 import com.example.md6projecthndn.config.jwt.JwtResponse;
-import com.example.md6projecthndn.config.service.JwtService;
+import com.example.md6projecthndn.service.jwt.JwtService;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -77,5 +77,9 @@ public class User {
     private boolean upgradeRequested;
 
     // Constructors, getters and setters
+
+    // This field represents whether the account is locked
+//    private boolean accountNonLocked;
+
 }
 

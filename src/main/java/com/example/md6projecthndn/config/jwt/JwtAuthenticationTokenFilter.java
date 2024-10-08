@@ -1,6 +1,6 @@
 package com.example.md6projecthndn.config.jwt;
 
-import com.example.md6projecthndn.config.service.JwtService;
+import com.example.md6projecthndn.service.jwt.JwtService;
 import com.example.md6projecthndn.service.user.IUserService;
 
 import jakarta.servlet.FilterChain;
