@@ -38,16 +38,22 @@ public class User {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Mật khẩu chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String password;
 
+    @Transient
+    private String confirmPassword;
+
     private String email;
 
     private String fullName;
 
     private String phoneNumber;
 
+    private String address;
+
+    private String avatar;
+
     @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
     private Set<Property> properties;
-
 
     @JsonManagedReference("user-booking")
     @OneToMany(mappedBy = "guest")

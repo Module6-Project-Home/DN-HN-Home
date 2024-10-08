@@ -19,7 +19,9 @@ public interface IUserService extends IGenerateService<User> {
 
     List<User> getUsersByRole(ROLENAME role);
 
-
-
     String registerNewUser(User user);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByUsername(String username);
 }

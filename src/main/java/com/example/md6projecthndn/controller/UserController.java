@@ -3,13 +3,12 @@ package com.example.md6projecthndn.controller;
 
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.user.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,12 +19,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    //test
-    @GetMapping("/list")
-    public ResponseEntity<?> getUserList() {
-        Iterable<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
+//    //test, khong phai chuc nang
+//    @GetMapping("/list")
+//    public ResponseEntity<?> getUserList() {
+//        Iterable<User> users = userService.findAll();
+//        return new ResponseEntity<>(users, HttpStatus.OK);
+//    }
 
     @GetMapping("/")
     public ResponseEntity<?> testResponse() {
@@ -45,9 +44,14 @@ public class UserController {
             return ResponseEntity.badRequest().body("Passwords do not match");
         }
 
-        // Check if the username or email is already taken (mock logic for now)
-        if (isUsernameOrEmailTaken(user.getUsername(), "mockEmail@example.com")) {
-            return ResponseEntity.badRequest().body("Username or Email is already taken");
+        // Kiểm tra xem email đã tồn tại chưa
+        if (userService.existsByEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().body("Email is already registered");
+        }
+
+        // Kiểm tra xem username đã tồn tại chưa
+        if (userService.existsByUsername(user.getUsername())) {
+            return ResponseEntity.badRequest().body("Username is already taken");
         }
 
         // Call service to register the user
@@ -60,11 +64,12 @@ public class UserController {
         }
     }
 
-    // Mock method for checking if the username or email is taken
-    private boolean isUsernameOrEmailTaken(String username, String email) {
-        // Replace with real database logic
-        return false; // Assume no conflicts for now
-    }
+//    // Mock method for checking if the username or email is taken
+//    //dang phat trien
+//    private boolean isUsernameOrEmailTaken(String username, String email) {
+//        // Replace with real database logic
+//        return false; // Assume no conflicts for now
+//    }
 
     @PutMapping("/request-upgrade")
     public ResponseEntity<String> requestUpgrade(@RequestParam Long userId) {
