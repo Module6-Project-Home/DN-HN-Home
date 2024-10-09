@@ -19,7 +19,8 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     Property findById(Long id);
 
-    public Page<Property> searchProperties(String name,
+
+    public Iterable<Property> searchProperties(String name,
                                            String address,
                                            Double minPrice,
                                            Double maxPrice,
@@ -30,9 +31,11 @@ public interface IPropertyService extends IGenerateService<Property> {
                                            Integer minBathrooms,
                                            Integer maxBathrooms,
                                            LocalDate checkInDate,    // Thêm tham số này
-                                           LocalDate checkOutDate,   // Thêm tham số này
-                                           Pageable pageable);
+                                           LocalDate checkOutDate   // Thêm tham số này
+                                          );
 
     List<Property> findByOwnerId(Long ownerId);
+
+    List<Property> findByOwnerUsername(String username);
 
 }

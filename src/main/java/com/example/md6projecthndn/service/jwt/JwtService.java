@@ -1,4 +1,4 @@
-package com.example.md6projecthndn.config.service;
+package com.example.md6projecthndn.service.jwt;
 
 
 import com.example.md6projecthndn.model.dto.UserPrinciple;
@@ -16,7 +16,7 @@ import java.util.Date;
 @Service
 public class JwtService {
     private static final String SECRET_KEY = "123456789987654321123456789987654321123456789";
-    private static final long EXPIRE_TIME = 864000L;
+    private static final long EXPIRE_TIME = 8640000L;
 
 
 

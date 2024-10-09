@@ -53,7 +53,7 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             + "    SELECT b FROM Booking b WHERE b.property.id = p.id "
             + "    AND b.checkInDate <= :checkOutDate "
             + "    AND b.checkOutDate >= :checkInDate))")
-    Page<Property> searchProperties(
+    Iterable<Property> searchProperties(
             @Param("name") String name,
             @Param("address") String address,
             @Param("minPrice") Double minPrice,
@@ -65,9 +65,12 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             @Param("minBathrooms") Integer minBathrooms,
             @Param("maxBathrooms") Integer maxBathrooms,
             @Param("checkInDate") LocalDate checkInDate,
-            @Param("checkOutDate") LocalDate checkOutDate,
-            Pageable pageable
+            @Param("checkOutDate") LocalDate checkOutDate
     );
+
+    List<Property> findByOwnerUsername(String username);
+
+
 
 
     List<Property> findByOwnerId(Long ownerId);

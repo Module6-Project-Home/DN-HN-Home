@@ -40,17 +40,18 @@ public class User {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Mật khẩu chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
     private String password;
 
+    @Transient
+    private String confirmPassword;
+
     private String email;
 
     private String fullName;
 
     private String phoneNumber;
 
+    private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<UserStatus> userStatuses;
-
-
+    private String avatar;
 
     @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
@@ -66,6 +67,8 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserStatus> userStatuses;
 
     @JsonManagedReference("user-review")
     @OneToMany(mappedBy = "guest")

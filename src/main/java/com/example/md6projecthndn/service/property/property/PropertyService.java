@@ -95,9 +95,10 @@ public class PropertyService implements IPropertyService {
     }
 
 
-
-
-
+    @Override
+    public List<Property> findByOwnerUsername(String username) {
+        return propertyRepository.findByOwnerUsername(username);
+    }
 
     @Override
     public Iterable<Property> findAll() {
@@ -115,7 +116,7 @@ public class PropertyService implements IPropertyService {
     }
 
     @Override
-    public Page<Property> searchProperties(String name,
+    public Iterable<Property> searchProperties(String name,
                                            String address,
                                            Double minPrice,
                                            Double maxPrice,
@@ -126,12 +127,11 @@ public class PropertyService implements IPropertyService {
                                            Integer minBathrooms,
                                            Integer maxBathrooms,
                                            LocalDate checkInDate,
-                                           LocalDate checkOutDate,
-                                           Pageable pageable) {
+                                           LocalDate checkOutDate) {
         return propertyRepository.searchProperties(
                 name, address, minPrice, maxPrice, propertyType, roomType,
                 minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                checkInDate, checkOutDate, pageable);
+                checkInDate, checkOutDate);
     }
 
     @Override
@@ -139,24 +139,6 @@ public class PropertyService implements IPropertyService {
         return propertyRepository.findByOwnerId(ownerId);
     }
 
-    // Cập nhật thông tin bất động sản
-    @Transactional
-    public Property updateProperty(Long id, PropertyDTO propertyDTO) {
-        Property property = propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bất động sản không tồn tại"));
-
-        property.setName(propertyDTO.getName());
-        property.setPropertyType(propertyTypeRepository.findByName(propertyDTO.getPropertyType()).orElse(null));
-        property.setRoomType(roomTypeRepository.findByName(propertyDTO.getRoomType()).orElse(null));
-        property.setAddress(propertyDTO.getAddress());
-        property.setBedrooms(propertyDTO.getBedrooms());
-        property.setBathrooms(propertyDTO.getBathrooms());
-        property.setDescription(propertyDTO.getDescription());
-        property.setPricePerNight(propertyDTO.getPricePerNight());
-        property.setOwner(userRepository.findByUsername(propertyDTO.getOwner()));
-        property.setStatus(statusRepository.findByName(propertyDTO.getStatus()).orElse(null));
-        return propertyRepository.save(property);
-    }
 
 
 

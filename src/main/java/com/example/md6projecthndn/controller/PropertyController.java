@@ -1,6 +1,8 @@
 package com.example.md6projecthndn.controller;
 
 
+import com.example.md6projecthndn.config.jwt.JwtResponse;
+import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.property.*;
 
 import com.example.md6projecthndn.model.entity.user.User;
@@ -12,7 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -30,13 +36,29 @@ public class PropertyController {
 
     @PostMapping
     public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO propertyDTO) {
-        String username = propertyDTO.getOwner(); // Giả sử bạn đã cung cấp owner trong PropertyDTO
+        // Lấy thông tin từ SecurityContextHolder sau khi JWT đã được xác thực
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername(); // Lấy username từ UserDetails
+        }
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         User owner = userService.findByUsername(username);
-        if (owner==null) {
+        if (owner == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
+        // Gán owner cho PropertyDTO
+        propertyDTO.setOwner(username);
         Property savedProperty = propertyService.addPropertyPost(propertyDTO);
+        System.out.println(savedProperty);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProperty);
     }
     @GetMapping
@@ -70,9 +92,6 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDTOs);
     }
 
-
-
-
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDTO> findRPropertyById(@PathVariable Long id) {
         Property p = propertyService.findById(id);
@@ -96,7 +115,6 @@ public class PropertyController {
             dto.setRoomType(p.getRoomType().getName());
             System.out.println("Images: " + p.getImages());  // Debug xem ảnh có được lấy từ CSDL hay không
 
-
             // Thêm imageUrls
             List<String> imageUrls = p.getImages().stream()
                     .map(PropertyImage::getImageUrl) // Sử dụng PropertyImage
@@ -110,7 +128,7 @@ public class PropertyController {
     }
 
     @GetMapping("/search")
-    public Page<Property> searchProperties(
+    public ResponseEntity<List<PropertyDTO  >> searchProperties(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) Double minPrice,
@@ -122,18 +140,35 @@ public class PropertyController {
             @RequestParam(required = false) Integer minBathrooms,
             @RequestParam(required = false) Integer maxBathrooms,
             @RequestParam(required = false) LocalDate checkInDate,
-            @RequestParam(required = false) LocalDate checkOutDate,
-            Pageable pageable
+            @RequestParam(required = false) LocalDate checkOutDate
     ) {
-        return propertyService.searchProperties(
+        List<Property> properties = (List<Property>) propertyService.searchProperties(
                 name, address, minPrice, maxPrice, propertyType, roomType,
                 minBedrooms, maxBedrooms, minBathrooms, maxBathrooms,
-                checkInDate, checkOutDate, pageable);
+                checkInDate, checkOutDate );
+        List<PropertyDTO> propertyDTOs = properties.stream().map(p -> {
+            PropertyDTO dto = new PropertyDTO();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setAddress(p.getAddress());
+            dto.setPricePerNight(p.getPricePerNight());
+            dto.setOwner(p.getOwner().getUsername());
+            dto.setBathrooms(p.getBathrooms());
+            dto.setBedrooms(p.getBedrooms());
+            dto.setStatus(p.getStatus().getName());
+            dto.setDescription(p.getDescription());
+            dto.setPropertyType(p.getPropertyType().getName());
+            dto.setRoomType(p.getRoomType().getName());
+
+            // Thêm danh sách ảnh
+            List<String> imageUrls = p.getImages().stream()
+                    .map(PropertyImage::getImageUrl)
+                    .toList();
+            dto.setImageUrls(imageUrls);
+
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(propertyDTOs);
     }
-
-
-
-
-
-
 }
