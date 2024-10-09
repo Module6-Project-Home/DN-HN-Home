@@ -2,17 +2,18 @@ package com.example.md6projecthndn.controller;
 
 
 import com.example.md6projecthndn.model.dto.ROLENAME;
+import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.model.entity.user.UserStatus;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -23,6 +24,7 @@ public class AdminController {
 
     @Autowired
     private IRoleService roleService;
+    
 
     @PutMapping("/approve-upgrade")
     public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved) {
@@ -73,5 +75,75 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
         }
     }
+
+//    @GetMapping("/users")
+//    public ResponseEntity<List<User>> getUsersWithRoleUser() {
+//        List<User> users = userService.getUsersByRole(ROLENAME.ROLE_USER);
+//        return ResponseEntity.ok(users);
+//    }
+//@GetMapping("/users")
+//public ResponseEntity<List<UserDTO>> getUsersWithRoleUser() {
+//    List<User> users = userService.getUsersByRole(ROLENAME.ROLE_USER);
+//    List<UserDTO> userDetailsDTOs = users.stream()
+//            .map(user -> new UserDTO(
+//                    user.getFullName(),
+//                    user.getPhoneNumber(),
+//                    user.getCurrentStatus().name()
+//            ))
+//            .collect(Collectors.toList());
+//    return ResponseEntity.ok(userDetailsDTOs);
+//}
+
+    @GetMapping("/users")// lấy danh sách người dùng theo role + phân trang 5 user 1 page
+    public ResponseEntity<Page<UserDTO>> getUsersWithRoleUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_USER, PageRequest.of(page, size));
+        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+                user.getId(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getCurrentStatus().name()
+        ));
+        return ResponseEntity.ok(UserDTOs);
+    }
+
+
+    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
+    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
+        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+                user.getId(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getCurrentStatus().name()
+        ));
+        return ResponseEntity.ok(UserDTOs);
+    }
+    @PutMapping("/update-status")
+    public ResponseEntity<String> updateUserStatus(@RequestParam("userId") Long userId, @RequestParam("status") String status) {
+        try {
+            User user = userService.findById(userId);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            user.setCurrentStatus(UserStatus.USER_STATUS.valueOf(status.toUpperCase()));
+            userService.save(user);
+
+            return ResponseEntity.ok("User status updated successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+
+
+
 
 }
