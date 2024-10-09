@@ -6,6 +6,7 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.booking.Status;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
@@ -81,6 +82,7 @@ public class Property {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status; // Sử dụng bảng Status để quản lý trạng thái
 
+    @JsonManagedReference("property-booking")
     @OneToMany(mappedBy = "property")
     private Set<Booking> bookings;
 

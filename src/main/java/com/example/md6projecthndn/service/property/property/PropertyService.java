@@ -1,6 +1,10 @@
 package com.example.md6projecthndn.service.property.property;
 
 
+import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
+import com.example.md6projecthndn.model.dto.ReviewDTO;
+import com.example.md6projecthndn.model.dto.PropertyImageDTO;
 import com.example.md6projecthndn.model.entity.property.*;
 import com.example.md6projecthndn.repository.booking.IStatusRepository;
 import com.example.md6projecthndn.repository.property.IPropertyImageRepository;
@@ -9,16 +13,11 @@ import com.example.md6projecthndn.repository.property.IPropertyTypeRepository;
 import com.example.md6projecthndn.repository.property.IRoomTypeRepository;
 import com.example.md6projecthndn.repository.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PropertyService implements IPropertyService {
@@ -139,8 +138,63 @@ public class PropertyService implements IPropertyService {
         return propertyRepository.findByOwnerId(ownerId);
     }
 
+    @Override
+    public PropertyDetailDTO findPropertyById(Long id) {
+        Optional<Property> propertyOptional = propertyRepository.findById(id);
 
+        if (propertyOptional.isPresent()) {
+            Property property = propertyOptional.get();
+            PropertyDetailDTO propertyDTO = new PropertyDetailDTO();
 
+            propertyDTO.setId(property.getId());
+            propertyDTO.setName(property.getName());
+            propertyDTO.setAddress(property.getAddress());
+            propertyDTO.setBathrooms(property.getBathrooms());
+            propertyDTO.setBedrooms(property.getBedrooms());
+            propertyDTO.setDescription(property.getDescription());
+            propertyDTO.setPricePerNight(property.getPricePerNight());
 
+            Set<PropertyImageDTO> imageDTOs = property.getImages().stream().map(image -> {
+                PropertyImageDTO imageDTO = new PropertyImageDTO();
+                imageDTO.setId(image.getId());
+                imageDTO.setImageUrl(image.getImageUrl());
+                return imageDTO;
+            }).collect(Collectors.toSet());
+            propertyDTO.setImages(imageDTOs);
+
+            List<ReviewDTO> reviews = property.getReviews().stream().map(review -> {
+                ReviewDTO reviewDTO = new ReviewDTO();
+                reviewDTO.setId(review.getId());
+                reviewDTO.setRating(review.getRating());
+                reviewDTO.setComment(review.getComment());
+                reviewDTO.setGuest(review.getGuest().getUsername());
+                return reviewDTO;
+            }).collect(Collectors.toList());
+            propertyDTO.setReviews(reviews);
+
+            return propertyDTO;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<PropertyTopBookingDTO> findPropertyTopBookingDTO() {
+        List<Object[]> results = propertyRepository.findPropertyTopBookingDTO();
+        List<PropertyTopBookingDTO> properties = new ArrayList<>();
+
+        for (Object[] result : results) {
+            PropertyTopBookingDTO dto = new PropertyTopBookingDTO(
+                    ((Number) result[0]).longValue(), // id
+                    (String) result[1],               // name
+                    ((Number) result[2]).doubleValue(),// pricePerNight
+                    (String) result[3],               // address
+                    (String) result[4]                // imageUrl
+            );
+            properties.add(dto);
+        }
+
+        return properties;
+    }
 
 }
