@@ -2,6 +2,7 @@ package com.example.md6projecthndn.service.property.property;
 
 
 import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.dto.ReviewDTO;
 import com.example.md6projecthndn.model.dto.PropertyImageDTO;
 import com.example.md6projecthndn.model.entity.property.*;
@@ -15,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,4 +176,24 @@ public class PropertyService implements IPropertyService {
 
         return null;
     }
+
+    @Override
+    public List<PropertyTopBookingDTO> findPropertyTopBookingDTO() {
+        List<Object[]> results = propertyRepository.findPropertyTopBookingDTO();
+        List<PropertyTopBookingDTO> properties = new ArrayList<>();
+
+        for (Object[] result : results) {
+            PropertyTopBookingDTO dto = new PropertyTopBookingDTO(
+                    ((Number) result[0]).longValue(), // id
+                    (String) result[1],               // name
+                    ((Number) result[2]).doubleValue(),// pricePerNight
+                    (String) result[3],               // address
+                    (String) result[4]                // imageUrl
+            );
+            properties.add(dto);
+        }
+
+        return properties;
+    }
+
 }

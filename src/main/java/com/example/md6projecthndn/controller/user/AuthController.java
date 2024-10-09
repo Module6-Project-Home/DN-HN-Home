@@ -1,16 +1,9 @@
 package com.example.md6projecthndn.controller.user;
 
-
-
-
-
-
-
 import com.example.md6projecthndn.config.jwt.JwtResponse;
-import com.example.md6projecthndn.config.service.JwtService;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.service.jwt.JwtService;
 import com.example.md6projecthndn.service.user.IUserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +60,4 @@ public class AuthController {
         // Đối với JWT, không cần thực hiện gì ở server, chỉ cần xóa token ở client
         return ResponseEntity.ok("Đăng xuất thành công!");
     }
-
-
 }

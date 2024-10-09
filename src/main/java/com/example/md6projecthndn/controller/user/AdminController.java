@@ -20,9 +20,9 @@ public class AdminController {
 
     @Autowired
     private IUserService userService;
+
     @Autowired
     private IRoleService roleService;
-
 
     @PutMapping("/approve-upgrade")
     public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved) {
@@ -56,7 +56,6 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId) {

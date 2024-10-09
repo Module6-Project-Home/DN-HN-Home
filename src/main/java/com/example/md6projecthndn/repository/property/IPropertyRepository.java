@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.repository.property;
 
 
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyType;
 import com.example.md6projecthndn.model.entity.property.RoomType;
@@ -70,5 +71,13 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
 
 
     List<Property> findByOwnerId(Long ownerId);
+
+    @Query(nativeQuery = true, value = "SELECT p.id as id, p.name as name, p.price_per_night as pricePerNight, p.address as address, MIN(pi.image_url) as imageUrl " +
+            "FROM properties p " +
+            "JOIN bookings b ON p.id = b.property_id " +
+            "JOIN property_images pi ON p.id = pi.property_id " +
+            "GROUP BY p.id " +
+            "LIMIT 5")
+    List<Object[]> findPropertyTopBookingDTO();
 
 }

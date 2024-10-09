@@ -54,4 +54,3 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
-

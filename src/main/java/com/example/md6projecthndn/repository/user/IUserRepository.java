@@ -20,4 +20,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     List<User> findByRoles_Name(ROLENAME role); // Lấy danh sách người dùng theo role
 
     User findUserById (Long id);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

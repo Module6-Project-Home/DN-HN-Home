@@ -1,22 +1,17 @@
 package com.example.md6projecthndn.controller.property;
 
-
 import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.*;
 
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import javax.validation.Valid;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -71,9 +66,6 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDTOs);
     }
 
-
-
-
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDTO> findRPropertyById(@PathVariable Long id) {
         Property p = propertyService.findById(id);
@@ -96,7 +88,6 @@ public class PropertyController {
             dto.setPropertyType(p.getPropertyType().getName());
             dto.setRoomType(p.getRoomType().getName());
             System.out.println("Images: " + p.getImages());  // Debug xem ảnh có được lấy từ CSDL hay không
-
 
             // Thêm imageUrls
             List<String> imageUrls = p.getImages().stream()
@@ -156,7 +147,7 @@ public class PropertyController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<?> showDetailForm(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<?> showDetailForm(@PathVariable Long id) {
         PropertyDetailDTO property = propertyService.findPropertyById(id);
 
         if (property != null) {
@@ -165,6 +156,16 @@ public class PropertyController {
             return new ResponseEntity<>("Property not found", HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @GetMapping("/top-booking")
+    public ResponseEntity<?> showTopBooking() {
+        List<PropertyTopBookingDTO> propertyTopBooking = propertyService.findPropertyTopBookingDTO();
+        if (propertyTopBooking != null) {
+            return new ResponseEntity<>(propertyTopBooking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("list property not found", HttpStatus.NOT_FOUND);
+        }
     }
 
 }

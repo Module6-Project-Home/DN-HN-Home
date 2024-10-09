@@ -27,7 +27,6 @@ public class Status {
     @OneToMany(mappedBy = "status")
     private Set<Booking> bookings;
 
-
     @OneToMany(mappedBy = "status")
     private Set<Property> properties;
 

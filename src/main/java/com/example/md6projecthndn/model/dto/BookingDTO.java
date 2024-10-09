@@ -46,21 +46,21 @@ public class BookingDTO implements Validator {
             }
         }
 
-        // Kiểm tra ngày đặt
-        if (bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
-            LocalDate today = LocalDate.now();
-            if (!bookingDTO.getCheckInDate().isAfter(today)) {
-                errors.rejectValue("checkInDate", "checkInDate.past", "Xin lỗi. Bạn phải đặt phòng trước ít nhất 1 ngày");
-            }
-            if (!bookingDTO.getCheckInDate().isBefore(bookingDTO.getCheckOutDate().minusDays(1))) {
-                errors.rejectValue("checkInDate", "checkInDate.invalid", "Xin lỗi. Bạn phải ở lại ít nhất 1 đêm");
-            }
-        }
-
-        // Kiểm tra nếu ngày không được chọn
-        if (bookingDTO.getCheckInDate() == null || bookingDTO.getCheckOutDate() == null) {
-            errors.rejectValue("checkInDate", "checkInDate.null", "Vui lòng chọn thời gian");
-        }
+//        // Kiểm tra ngày đặt
+//        if (bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
+//            LocalDate today = LocalDate.now();
+//            if (!bookingDTO.getCheckInDate().isAfter(today)) {
+//                errors.rejectValue("checkInDate", "checkInDate.past", "Xin lỗi. Bạn phải đặt phòng trước ít nhất 1 ngày");
+//            }
+//            if (!bookingDTO.getCheckInDate().isBefore(bookingDTO.getCheckOutDate().minusDays(1))) {
+//                errors.rejectValue("checkInDate", "checkInDate.invalid", "Xin lỗi. Bạn phải ở lại ít nhất 1 đêm");
+//            }
+//        }
+//
+//        // Kiểm tra nếu ngày không được chọn
+//        if (bookingDTO.getCheckInDate() == null || bookingDTO.getCheckOutDate() == null) {
+//            errors.rejectValue("checkInDate", "checkInDate.null", "Vui lòng chọn thời gian");
+//        }
     }
 
 

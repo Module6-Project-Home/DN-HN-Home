@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.property.property;
 
 
 import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyType;
@@ -39,5 +40,7 @@ public interface IPropertyService extends IGenerateService<Property> {
     List<Property> findByOwnerId(Long ownerId);
 
     PropertyDetailDTO findPropertyById(@Param("id") Long id);
+
+    List<PropertyTopBookingDTO> findPropertyTopBookingDTO();
 
 }
