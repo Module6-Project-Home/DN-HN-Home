@@ -46,6 +46,12 @@ public class User {
 
     private String phoneNumber;
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserStatus> userStatuses;
+
+
+
     @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
     private Set<Property> properties;
@@ -75,6 +81,24 @@ public class User {
     private LocalDateTime updatedAt;
 
     private boolean upgradeRequested;
+
+
+
+    public UserStatus.USER_STATUS getCurrentStatus() {
+        return userStatuses.stream().findFirst().orElse(null).getStatus();
+    }
+
+    public void setCurrentStatus(UserStatus.USER_STATUS newStatus) {
+        // Xóa trạng thái hiện tại
+        userStatuses.clear();
+
+        // Thêm trạng thái mới
+        UserStatus userStatus = new UserStatus();
+        userStatus.setStatus(newStatus);
+        userStatuses.add(userStatus);
+    }
+
+
 
     // Constructors, getters and setters
 }

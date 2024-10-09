@@ -3,6 +3,9 @@ package com.example.md6projecthndn.repository.user;
 
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.entity.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +23,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     List<User> findByRoles_Name(ROLENAME role); // Lấy danh sách người dùng theo role
 
     User findUserById (Long id);
+
+
+    Page<User> findAllByRoles_Name(ROLENAME rolename, PageRequest of);
 }
