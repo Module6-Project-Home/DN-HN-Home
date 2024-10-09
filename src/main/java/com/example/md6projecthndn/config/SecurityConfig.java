@@ -1,6 +1,5 @@
 package com.example.md6projecthndn.config;
 
-
 import com.example.md6projecthndn.config.jwt.JwtAuthenticationTokenFilter;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     //AuthenticationManager chịu trách nhiệm xác thực thông tin đăng nhập của người dùng.
+
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -62,7 +62,6 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
@@ -75,12 +74,11 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**","/api/**").hasRole("ADMIN")
                                 .requestMatchers("/api/user/**","/api/**").hasRole("USER")
                                 .requestMatchers("/api/host/**","/api/**").hasRole("HOST")
-
-
                                 .anyRequest().authenticated()
                 )
                 .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

@@ -92,9 +92,6 @@ public class PropertyController {
         return ResponseEntity.ok(propertyDTOs);
     }
 
-
-
-
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDTO> findRPropertyById(@PathVariable Long id) {
         Property p = propertyService.findById(id);
@@ -117,7 +114,6 @@ public class PropertyController {
             dto.setPropertyType(p.getPropertyType().getName());
             dto.setRoomType(p.getRoomType().getName());
             System.out.println("Images: " + p.getImages());  // Debug xem ảnh có được lấy từ CSDL hay không
-
 
             // Thêm imageUrls
             List<String> imageUrls = p.getImages().stream()
@@ -175,10 +171,4 @@ public class PropertyController {
 
         return ResponseEntity.ok(propertyDTOs);
     }
-
-
-
-
-
-
 }
