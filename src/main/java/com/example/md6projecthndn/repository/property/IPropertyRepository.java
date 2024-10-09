@@ -68,6 +68,10 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             @Param("checkOutDate") LocalDate checkOutDate
     );
 
+    List<Property> findByOwnerUsername(String username);
+
+
+
 
     List<Property> findByOwnerId(Long ownerId);
 

@@ -95,9 +95,10 @@ public class PropertyService implements IPropertyService {
     }
 
 
-
-
-
+    @Override
+    public List<Property> findByOwnerUsername(String username) {
+        return propertyRepository.findByOwnerUsername(username);
+    }
 
     @Override
     public Iterable<Property> findAll() {

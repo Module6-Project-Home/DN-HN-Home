@@ -1,8 +1,7 @@
-package com.example.md6projecthndn.service.jwt;
+package com.example.md6projecthndn.config.service;
 
 
 import com.example.md6projecthndn.model.dto.UserPrinciple;
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
