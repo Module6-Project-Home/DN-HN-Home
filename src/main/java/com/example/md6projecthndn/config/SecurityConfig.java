@@ -77,6 +77,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/user/**").hasRole("USER")
                                 .requestMatchers("/api/host/**").hasRole("HOST")
+
                                 .anyRequest().authenticated()
                 )
                 .build();
