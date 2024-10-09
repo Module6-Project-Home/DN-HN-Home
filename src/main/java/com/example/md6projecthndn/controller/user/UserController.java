@@ -6,10 +6,8 @@ import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,5 +26,12 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
         }
+    }
+
+    @GetMapping("/current")
+    public User getCurrentUser(Authentication authentication) {
+        // Lấy thông tin người dùng từ Authentication
+        String username = authentication.getName(); // Lấy tên người dùng từ Authentication
+        return userService.findByUsername(username); // Gọi service để lấy thông tin người dùng
     }
 }

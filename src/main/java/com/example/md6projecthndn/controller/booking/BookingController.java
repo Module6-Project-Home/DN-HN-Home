@@ -17,8 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -35,47 +39,43 @@ public class BookingController {
     @Autowired
     private IStatusService statusService;
 
+    @PostMapping
+    public ResponseEntity<?> createBooking(@Valid @RequestBody BookingDTO bookingDTO, BindingResult bindingResult) {
+        try {
+            List<Booking> overlappingBookings = bookingService.findOverlappingBookings(
+                    bookingDTO.getProperty().getId(),
+                    bookingDTO.getCheckInDate(),
+                    bookingDTO.getCheckOutDate()
+            );
+            bookingDTO.setOverlappingBookings(overlappingBookings);
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createBooking(@RequestBody BookingDTO bookingDTO, BindingResult bindingResult, Principal principal) {
-        Property property = propertyService.findById(bookingDTO.getProperty().getId());
-        String username = principal.getName();
-        User userCurrent = userService.findByUsername(username);
+            Status status = statusService.findById(bookingDTO.getStatus().getId());
+            bookingDTO.setStatus(status);
+            Property property = propertyService.findById(bookingDTO.getProperty().getId());
+            bookingDTO.setProperty(property);
+            User user = userService.findByUsername(bookingDTO.getGuest().getUsername());
+            bookingDTO.setGuest(user);
 
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Người dùng chưa đăng nhập");
+            bookingDTO.validate(bookingDTO, bindingResult);
+            if (bindingResult.hasErrors()) {
+                Map<String, String> errors = new HashMap<>();
+                bindingResult.getFieldErrors().forEach(error ->
+                        errors.put(error.getField(), error.getDefaultMessage())
+                );
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            }
+
+            Booking booking = new Booking();
+            BeanUtils.copyProperties(bookingDTO, booking);
+            bookingService.save(booking);
+            return new ResponseEntity<>(booking, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-        if (property == null || userCurrent == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy tài sản hoặc người dùng");
-        }
-
-        List<Booking> overlappingBookings = bookingService.findOverlappingBookings(
-                bookingDTO.getProperty().getId(),
-                bookingDTO.getCheckInDate(),
-                bookingDTO.getCheckOutDate()
-        );
-
-        bookingDTO.setOverlappingBookings(overlappingBookings);
-        bookingDTO.validate(bookingDTO, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        }
-
-        Status status = statusService.findById(2L);
-        if (status == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy trạng thái");
-        }
-
-        property.setStatus(status);
-
-        Booking booking = new Booking();
-        BeanUtils.copyProperties(bookingDTO, booking);
-        booking.setStatus(status);
-        bookingService.save(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Đặt phòng thành công");
     }
+
+
+
 
 
     @GetMapping("/{bookingId}")
@@ -85,5 +85,16 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy booking");
         }
         return ResponseEntity.ok(booking);
+    }
+
+    @GetMapping("/overlapping")
+    public ResponseEntity<List<Booking>> getOverlappingBookings(
+            @RequestParam Long propertyId,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+
+        List<Booking> overlappingBookings = bookingService.findOverlappingBookings(propertyId, startDate, endDate);
+
+        return ResponseEntity.ok(overlappingBookings);
     }
 }

@@ -39,32 +39,30 @@ public class BookingDTO implements Validator {
     public void validate(Object target, Errors errors) {
         BookingDTO bookingDTO = (BookingDTO) target;
 
-
+        // Kiểm tra booking chồng chéo
         if (bookingDTO.getProperty() != null && bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
             if (!this.overlappingBookings.isEmpty()) {
-
-                errors.rejectValue("property", "property.booking.overlap", "HomeStay này đã có được đặt trong thời gian bạn chọn, Vui lòng chọn lại");
+                errors.rejectValue("property", "property.booking.overlap", "Nhà này đã được đặt trong thời gian bạn chọn, Vui lòng chọn lại!");
             }
         }
 
+        // Kiểm tra ngày đặt
         if (bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
             LocalDate today = LocalDate.now();
-
             if (!bookingDTO.getCheckInDate().isAfter(today)) {
-                errors.rejectValue("checkInDate", "checkInDate.past", " Xin lỗi. Bạn phải đặt phòng trước ít nhất 1 ngày");
+                errors.rejectValue("checkInDate", "checkInDate.past", "Xin lỗi. Bạn phải đặt phòng trước ít nhất 1 ngày");
             }
-
-
             if (!bookingDTO.getCheckInDate().isBefore(bookingDTO.getCheckOutDate().minusDays(1))) {
-                errors.rejectValue("checkInDate", "checkInDate.invalid", " Xin lỗi. Bạn phải ở lại ít nhất 1 đêm");
+                errors.rejectValue("checkInDate", "checkInDate.invalid", "Xin lỗi. Bạn phải ở lại ít nhất 1 đêm");
             }
         }
 
-        if(bookingDTO.getCheckInDate() == null || bookingDTO.getCheckOutDate() == null) {
-            errors.rejectValue("checkInDate", "checkInDate.null", " Vui lòng chọn thời gian đặt HomeStay");
+        // Kiểm tra nếu ngày không được chọn
+        if (bookingDTO.getCheckInDate() == null || bookingDTO.getCheckOutDate() == null) {
+            errors.rejectValue("checkInDate", "checkInDate.null", "Vui lòng chọn thời gian");
         }
-
     }
+
 
     @Override
     public boolean supports(Class<?> clazz) {
