@@ -36,4 +36,6 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     List<Property> findByOwnerId(Long ownerId);
 
+    List<Property> findByOwnerUsername(String username);
+
 }

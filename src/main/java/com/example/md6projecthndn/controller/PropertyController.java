@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.controller;
 
 
+import com.example.md6projecthndn.config.jwt.JwtResponse;
 import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.property.*;
 
@@ -13,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -32,13 +36,29 @@ public class PropertyController {
 
     @PostMapping
     public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO propertyDTO) {
-        String username = propertyDTO.getOwner(); // Giả sử bạn đã cung cấp owner trong PropertyDTO
+        // Lấy thông tin từ SecurityContextHolder sau khi JWT đã được xác thực
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername(); // Lấy username từ UserDetails
+        }
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
         User owner = userService.findByUsername(username);
-        if (owner==null) {
+        if (owner == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
+        // Gán owner cho PropertyDTO
+        propertyDTO.setOwner(username);
         Property savedProperty = propertyService.addPropertyPost(propertyDTO);
+        System.out.println(savedProperty);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProperty);
     }
     @GetMapping
