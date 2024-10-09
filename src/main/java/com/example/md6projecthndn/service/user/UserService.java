@@ -126,4 +126,9 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.existsByUsername(username);
     }
 
+    @Override
+    public List<User> findUsersRequestingUpgrade() {
+        return userRepository.findByUpgradeRequested(true);
+    }
+
 }

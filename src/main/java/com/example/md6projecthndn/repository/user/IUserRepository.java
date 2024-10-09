@@ -24,4 +24,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    List<User> findByUpgradeRequested(boolean upgradeRequested);
 }

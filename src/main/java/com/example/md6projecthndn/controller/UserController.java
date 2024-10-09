@@ -56,7 +56,7 @@ public class UserController {
 
         // Call service to register the user
         String registrationResult = userService.registerNewUser(user);
-        if (registrationResult.equals("User registered successfully.")) {
+        if (registrationResult.equals("User registered successfully!")) {
             return ResponseEntity.ok(registrationResult);
         } else {
             System.out.println("Registration result is: " + registrationResult);
