@@ -8,6 +8,7 @@ import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
+import com.example.md6projecthndn.service.user.status.IUserStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,9 @@ public class AdminController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IUserStatusService userStatusService;
 
     @Autowired
     private IRoleService roleService;
@@ -99,11 +103,15 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_USER, PageRequest.of(page, size));
+        //String fullName, String phoneNumber, String status, Long userId, String userName
         Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-                user.getId(),
                 user.getFullName(),
                 user.getPhoneNumber(),
-                user.getCurrentStatus().name()
+                user.getCurrentStatus().name(),
+                user.getId(),
+                user.getUsername(),
+                user.getAvatar(),
+                user.getAddress()
         ));
         return ResponseEntity.ok(UserDTOs);
     }
@@ -115,14 +123,17 @@ public class AdminController {
             @RequestParam(defaultValue = "5") int size) {
         Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
         Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-                user.getId(),
                 user.getFullName(),
                 user.getPhoneNumber(),
-                user.getCurrentStatus().name()
+                user.getCurrentStatus().name(),
+                user.getId(),
+                user.getUsername(),
+                user.getAvatar(),
+                user.getAddress()
         ));
         return ResponseEntity.ok(UserDTOs);
     }
-    @PutMapping("/update-status")
+    @PutMapping("/update-status") // cập nhạt status cho user,host
     public ResponseEntity<String> updateUserStatus(@RequestParam("userId") Long userId, @RequestParam("status") String status) {
         try {
             User user = userService.findById(userId);
@@ -130,7 +141,17 @@ public class AdminController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
 
-            user.setCurrentStatus(UserStatus.USER_STATUS.valueOf(status.toUpperCase()));
+            //kiểm tra xem status đã tồn tại chưa, nếu chưa thì tạo mới
+            UserStatus userStatus = userStatusService.findByStatus(UserStatus.USER_STATUS.valueOf(status.toUpperCase()))
+                    .orElseGet(() -> {
+                        UserStatus newUserStatus = new UserStatus();
+                        newUserStatus.setStatus(UserStatus.USER_STATUS.valueOf(status.toUpperCase()));
+                        return userStatusService.save(newUserStatus);
+                    });
+
+            // cập nhật status cho user
+            user.getUserStatuses().clear();
+            user.getUserStatuses().add(userStatus);
             userService.save(user);
 
             return ResponseEntity.ok("User status updated successfully.");
