@@ -2,6 +2,7 @@ package com.example.md6projecthndn.service.user;
 
 
 import com.example.md6projecthndn.model.dto.ROLENAME;
+import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
@@ -9,6 +10,9 @@ import com.example.md6projecthndn.model.entity.user.UserStatus;
 import com.example.md6projecthndn.model.entity.user.UserStatus.USER_STATUS;
 import com.example.md6projecthndn.repository.user.IRoleRepository;
 import com.example.md6projecthndn.repository.user.IUserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -76,6 +80,11 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public List<User> getUsersByRole(ROLENAME role) {
         return userRepository.findByRoles_Name(role);
+    }
+
+    @Override
+    public Page<User> getUsersByRole_Name(ROLENAME rolename, PageRequest of) {
+        return userRepository.findAllByRoles_Name(rolename, of);
     }
 
 

@@ -30,6 +30,7 @@ public class Booking {
     @JoinColumn(name = "guest_id")
     private User guest;
 
+    @JsonBackReference("property-booking")
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;
@@ -40,6 +41,7 @@ public class Booking {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate;
 
+    @JsonBackReference("status-booking")
     @ManyToOne
     @JoinColumn(name = "status_id")
     private Status status;
