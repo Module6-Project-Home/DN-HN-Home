@@ -3,6 +3,7 @@ package com.example.md6projecthndn.model.entity.booking;
 
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.model.entity.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,6 +15,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,6 +33,7 @@ public class Booking {
     @JoinColumn(name = "guest_id")
     private User guest;
 
+    @JsonBackReference("property-booking")
     @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;
@@ -40,9 +44,10 @@ public class Booking {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate;
 
+    @JsonBackReference("booking_status-booking")
     @ManyToOne
-    @JoinColumn(name = "status_id")
-    private Status status;
+    @JoinColumn(name = "booking_status_id")
+    private BookingStatus bookingStatus;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
