@@ -24,6 +24,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
     User findUserById (Long id);
 
+    User findByEmail(String email);
+
 
     Page<User> findAllByRoles_Name(ROLENAME rolename, PageRequest of);
 

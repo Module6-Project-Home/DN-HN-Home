@@ -87,6 +87,10 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.findAllByRoles_Name(rolename, of);
     }
 
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
 
     @Override

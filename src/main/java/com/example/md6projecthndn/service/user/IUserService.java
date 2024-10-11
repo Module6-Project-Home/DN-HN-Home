@@ -31,4 +31,6 @@ public interface IUserService extends IGenerateService<User> {
 
     List<User> findUsersRequestingUpgrade();
     Page<User> getUsersByRole_Name(ROLENAME rolename, PageRequest of);
+
+    User findByEmail(String email);
 }
