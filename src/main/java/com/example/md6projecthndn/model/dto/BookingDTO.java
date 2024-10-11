@@ -3,6 +3,7 @@ package com.example.md6projecthndn.model.dto;
 
 
 import com.example.md6projecthndn.model.entity.booking.Booking;
+import com.example.md6projecthndn.model.entity.booking.BookingStatus;
 import com.example.md6projecthndn.model.entity.booking.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
@@ -32,7 +33,7 @@ public class BookingDTO implements Validator {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate checkOutDate;
 
-    private Status status;
+    private BookingStatus bookingStatus;
     private List<Booking> overlappingBookings;
 
     @Override

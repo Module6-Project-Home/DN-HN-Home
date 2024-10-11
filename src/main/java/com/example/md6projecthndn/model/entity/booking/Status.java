@@ -23,12 +23,7 @@ public class Status {
 
     private String name; // Booked, Cancelled, Completed, Available, Unavailable, etc.
 
-    @JsonManagedReference("status-booking")
-    @OneToMany(mappedBy = "status")
-    private Set<Booking> bookings;
-
     @OneToMany(mappedBy = "status")
     private Set<Property> properties;
 
-    // Constructors, getters and setters
 }
