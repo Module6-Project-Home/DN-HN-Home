@@ -91,6 +91,9 @@ public class UserController {
         return userService.findByUsername(username); // Gọi service để lấy thông tin người dùng
     }
 
-
+    @GetMapping("/findByUsername")
+    public User findByUsername(@RequestParam String username) {
+        return userService.findByUsername(username);
+    }
 
 }

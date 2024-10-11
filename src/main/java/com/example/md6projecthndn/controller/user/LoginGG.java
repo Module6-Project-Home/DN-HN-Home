@@ -5,6 +5,8 @@ import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.model.entity.user.UserStatus;
+import com.example.md6projecthndn.repository.user.IUserStatusRepository;
 import com.example.md6projecthndn.service.jwt.JwtService;
 import com.example.md6projecthndn.service.role.RoleService;
 import com.example.md6projecthndn.service.user.UserService;
@@ -38,6 +40,8 @@ public class LoginGG {
     private final PasswordEncoder passwordEncoder;
     @Autowired // Use @Autowired for dependency injection
     private RoleService roleService;
+    @Autowired
+    private IUserStatusRepository userStatusRepository; // Repository để lấy Status từ DB
 
     @Autowired
     private JwtService jwtService;
@@ -87,6 +91,7 @@ public class LoginGG {
             User user = userService.findByEmail(email);
             if (user == null) {
                 user = new User();
+                user.setUsername(email);
                 user.setEmail(email);
                 user.setFullName(fullName);
                 user.setAvatar(avatar);
@@ -96,6 +101,13 @@ public class LoginGG {
                 if (userRole != null) {
                     user.setRoles(new HashSet<>(Collections.singleton(userRole))); // Set roles as Set
                 }
+
+
+                // Đặt Status mặc định là ACTIVE
+                UserStatus activeStatus = userStatusRepository.findByStatus(UserStatus.USER_STATUS.ACTIVE)
+                        .orElseThrow(() -> new RuntimeException("Error: Status is not found."));
+                user.setUserStatuses(Set.of(activeStatus)); // Gán status cho người dùng
+
 
                 user.setPassword(passwordEncoder.encode("defaultPassword"));
                 userService.save(user);
@@ -119,7 +131,7 @@ public class LoginGG {
             String token = jwtService.generateTokenLogin(authentication);
 
             // Determine redirect URL
-            String redirectUrl = determineRedirectUrl(user.getRoles());
+            String redirectUrl = determineRedirectUrl(user.getRoles()) + "?token=" + token;
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());
