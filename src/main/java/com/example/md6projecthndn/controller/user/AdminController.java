@@ -137,6 +137,7 @@ public class AdminController {
                 // Nếu tìm thấy vai trò ROLE_HOST, thêm nó vào
                 if (hostRole != null) {
                     user.getRoles().add(hostRole);
+                    user.setUpgradeRequested(false); // Đặt lại trạng thái yêu cầu nâng cấp
                 }
             } else {
                 // Nếu không phê duyệt, có thể thêm logic khác nếu cần
