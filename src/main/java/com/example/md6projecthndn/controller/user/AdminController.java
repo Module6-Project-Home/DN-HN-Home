@@ -3,6 +3,7 @@ package com.example.md6projecthndn.controller.user;
 
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
+import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
@@ -139,9 +140,17 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+
     }
 
-
+    @GetMapping("/user-detail")
+    public ResponseEntity<UserDetailDTO> getUserDetail(@RequestParam("userId") Long userId) {
+        UserDetailDTO userDetailDTO = userService.getUserDetails(userId);
+        if(userDetailDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(userDetailDTO);
+    }
 
 
 

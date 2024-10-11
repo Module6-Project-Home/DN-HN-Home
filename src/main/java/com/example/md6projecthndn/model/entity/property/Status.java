@@ -1,9 +1,7 @@
-package com.example.md6projecthndn.model.entity.booking;
+package com.example.md6projecthndn.model.entity.property;
 
 
-import com.example.md6projecthndn.model.entity.property.Property;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "status")
+@Table(name = "property_status")
 public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +21,7 @@ public class Status {
 
     private String name; // Booked, Cancelled, Completed, Available, Unavailable, etc.
 
-    @JsonManagedReference("status-booking")
-    @OneToMany(mappedBy = "status")
-    private Set<Booking> bookings;
-
     @OneToMany(mappedBy = "status")
     private Set<Property> properties;
 
-    // Constructors, getters and setters
 }
