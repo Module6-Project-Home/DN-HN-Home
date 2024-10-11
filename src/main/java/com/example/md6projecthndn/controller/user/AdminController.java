@@ -107,7 +107,7 @@ public class AdminController {
             user.getUserStatuses().add(userStatus);
             userService.save(user);
 
-            return ResponseEntity.ok("User status updated successfully.");
+            return ResponseEntity.ok("Trạng thái của nguời dùng đã được cập nhật.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value");
         } catch (Exception e) {
