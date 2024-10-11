@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.user;
 
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
+import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
@@ -87,6 +88,10 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.findAllByRoles_Name(rolename, of);
     }
 
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
 
     @Override
@@ -135,4 +140,28 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.existsByUsername(username);
     }
 
+    @Override
+    public List<User> findUsersRequestingUpgrade() {
+        return userRepository.findByUpgradeRequested(true);
+    }
+
+    @Override
+    public UserDetailDTO getUserDetails(Long id) {
+        Object result = userRepository.getUserDetails(id);
+
+        // Mapping Object to UserDetailDTO directly
+        Object[] fields = (Object[]) result; // Vì query trả về nhiều cột nên vẫn phải ép kiểu thành Object[]
+
+        UserDetailDTO userDetailDTO = new UserDetailDTO(
+                ((Number) fields[0]).longValue(),        // id
+                (String) fields[1],                      // avatar
+                (String) fields[2],                      // username
+                (String) fields[3],                      // full_name
+                (String) fields[4],                      // phone_number
+                ((Number) fields[5]).intValue(),    // upgrade_requested (boolean)
+                ((Number) fields[6]).doubleValue()       // total_spent
+        );
+
+        return userDetailDTO;
+    }
 }
