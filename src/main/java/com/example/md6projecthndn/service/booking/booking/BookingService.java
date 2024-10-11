@@ -3,7 +3,7 @@ package com.example.md6projecthndn.service.booking.booking;
 
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
-import com.example.md6projecthndn.model.entity.booking.Status;
+import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.repository.booking.IBookingRepository;
 import com.example.md6projecthndn.service.booking.status.IStatusService;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class BookingService implements IBookingService {
     private final IBookingRepository bookingRepository;

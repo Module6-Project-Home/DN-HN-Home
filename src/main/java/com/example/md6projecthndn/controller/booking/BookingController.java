@@ -5,8 +5,8 @@ import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.BookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.BookingStatus;
-import com.example.md6projecthndn.model.entity.booking.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
+import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.booking.bookingstatus.IBookingStatusService;
@@ -21,7 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,8 @@ public class BookingController {
             BookingStatus status = bookingStatusService.findById(bookingDTO.getBookingStatus().getId());
             bookingDTO.setBookingStatus(status);
             Property property = propertyService.findById(bookingDTO.getProperty().getId());
+            Status newStatus = statusService.findById(2l);
+            property.setStatus(newStatus);
             bookingDTO.setProperty(property);
             User user = userService.findByUsername(bookingDTO.getGuest().getUsername());
             bookingDTO.setGuest(user);
@@ -105,12 +106,14 @@ public class BookingController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<BookingByUserDTO>> getBookingHistory(
+    public ResponseEntity<?> getBookingHistory(
            @RequestParam String userName
     ){
         List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userName);
         if(bookingByUserDTOList.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Bạn chưa có booking nào.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(bookingByUserDTOList);
     }

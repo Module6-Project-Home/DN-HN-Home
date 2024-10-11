@@ -3,7 +3,6 @@ package com.example.md6projecthndn.model.entity.property;
 
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.Review;
-import com.example.md6projecthndn.model.entity.booking.Status;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
