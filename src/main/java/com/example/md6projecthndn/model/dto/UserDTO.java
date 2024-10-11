@@ -13,11 +13,12 @@ public class UserDTO {
     private String userName;
     private String avatar;
     private String address;
+    private boolean upgradeRequested;
 
 
     // Constructors, getters, and setters
 
-    public UserDTO(String fullName, String phoneNumber, String status, Long userId, String userName,String avatar,String address) {
+    public UserDTO(String fullName, String phoneNumber, String status, Long userId, String userName,String avatar,String address, boolean upgradeRequested) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.status = status;
@@ -25,6 +26,7 @@ public class UserDTO {
         this.userName = userName;
         this.avatar = avatar;
         this.address = address;
+        this.upgradeRequested = upgradeRequested;
     }
 
 
