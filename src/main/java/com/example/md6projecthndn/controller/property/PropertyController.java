@@ -1,32 +1,27 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.property;
+
+import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 
 
-import com.example.md6projecthndn.config.jwt.JwtResponse;
-import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.entity.property.*;
 
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/properties") // Đường dẫn gốc cho controller
+@RequestMapping("/api/properties")
 public class PropertyController {
     @Autowired
     private IPropertyService propertyService;
@@ -171,4 +166,27 @@ public class PropertyController {
 
         return ResponseEntity.ok(propertyDTOs);
     }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> showDetailForm(@PathVariable Long id) {
+        PropertyDetailDTO property = propertyService.findPropertyById(id);
+
+        if (property != null) {
+            return new ResponseEntity<>(property, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Property not found", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @GetMapping("/top-booking")
+    public ResponseEntity<?> showTopBooking() {
+        List<PropertyTopBookingDTO> propertyTopBooking = propertyService.findPropertyTopBookingDTO();
+        if (propertyTopBooking != null) {
+            return new ResponseEntity<>(propertyTopBooking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("list property not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

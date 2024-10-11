@@ -1,14 +1,15 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.user;
 
 
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.validation.BindingResult;
 import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -81,5 +82,12 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
         }
+    }
+
+    @GetMapping("/current")
+    public User getCurrentUser(Authentication authentication) {
+        // Lấy thông tin người dùng từ Authentication
+        String username = authentication.getName(); // Lấy tên người dùng từ Authentication
+        return userService.findByUsername(username); // Gọi service để lấy thông tin người dùng
     }
 }

@@ -1,10 +1,8 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.property;
 
 
-import com.example.md6projecthndn.model.entity.property.PropertyType;
 import com.example.md6projecthndn.model.entity.property.RoomType;
 import com.example.md6projecthndn.service.property.roomType.IRoomTypeService;
-import com.example.md6projecthndn.service.property.roomType.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

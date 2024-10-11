@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.config;
 
 import com.example.md6projecthndn.config.jwt.JwtAuthenticationTokenFilter;
+
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -69,11 +70,14 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/api/login","/api/properties","/api/property-types","/api/room-types","/api/**").permitAll()
-                                .requestMatchers("/api/users/request-upgrade","/api/**").hasAnyRole("USER", "ADMIN") // Thêm quyền cho user
-                                .requestMatchers("/api/admin/**","/api/**").hasRole("ADMIN")
-                                .requestMatchers("/api/user/**","/api/**").hasRole("USER")
-                                .requestMatchers("/api/host/**","/api/**").hasRole("HOST")
+
+                                .requestMatchers("/api/login", "/api/properties","/api/properties/**", "/api/property-types", "/api/room-types","/api/bookings", "/**", "/api/users/register").permitAll()
+
+                                .requestMatchers("/api/users/request-upgrade").hasAnyRole("USER", "ADMIN") // Thêm quyền cho user
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/user/**").hasRole("USER")
+                                .requestMatchers("/api/host/**").hasRole("HOST")
+
                                 .anyRequest().authenticated()
                 )
                 .build();
@@ -91,4 +95,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
