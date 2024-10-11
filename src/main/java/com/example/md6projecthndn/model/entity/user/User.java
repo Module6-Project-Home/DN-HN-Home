@@ -104,5 +104,9 @@ public class User {
 
 
     // Constructors, getters and setters
+
+    // This field represents whether the account is locked
+//    private boolean accountNonLocked;
+
 }
 
