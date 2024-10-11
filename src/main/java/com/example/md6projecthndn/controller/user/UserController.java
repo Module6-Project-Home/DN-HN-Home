@@ -105,4 +105,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
         }
     }
+
+    @GetMapping("/current")
+    public User getCurrentUser(Authentication authentication) {
+        // Lấy thông tin người dùng từ Authentication
+        String username = authentication.getName(); // Lấy tên người dùng từ Authentication
+        return userService.findByUsername(username); // Gọi service để lấy thông tin người dùng
+    }
 }
