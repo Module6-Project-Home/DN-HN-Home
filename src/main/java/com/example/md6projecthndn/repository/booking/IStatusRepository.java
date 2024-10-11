@@ -1,6 +1,6 @@
 package com.example.md6projecthndn.repository.booking;
 
-import com.example.md6projecthndn.model.entity.booking.Status;
+import com.example.md6projecthndn.model.entity.property.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

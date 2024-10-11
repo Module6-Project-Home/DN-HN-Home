@@ -5,7 +5,7 @@ import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.BookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.BookingStatus;
-import com.example.md6projecthndn.model.entity.booking.Status;
+import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
