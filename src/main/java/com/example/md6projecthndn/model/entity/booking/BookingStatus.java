@@ -1,13 +1,12 @@
 package com.example.md6projecthndn.model.entity.booking;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,20 +18,11 @@ public class BookingStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status; // Booked, Cancelled, Completed
+    private String status;
+    private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
-    // Constructors, getters and setters
+    @JsonManagedReference("booking_status-booking")
+    @OneToMany(mappedBy = "bookingStatus")
+    private Set<Booking> bookings;
 }
 
