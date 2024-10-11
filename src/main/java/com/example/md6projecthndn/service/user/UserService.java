@@ -65,6 +65,10 @@ public class UserService implements IUserService, UserDetailsService {
 
     }
 
+    @Override
+    public Optional<User> findUserByName(String username){
+        return userRepository.findUserByUsername(username);
+    }
 
     @Override
     public User findByUsername(String username) {
@@ -87,7 +91,10 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.findAllByRoles_Name(rolename, of);
     }
 
+    @Override
+    public void updateUser(User user) {
 
+    }
 
     @Override
     public String registerNewUser(User user) {
@@ -122,7 +129,7 @@ public class UserService implements IUserService, UserDetailsService {
         // Save the user entity
         userRepository.save(user);
 
-        return "User registered successfully!";
+        return "Đăng ký tài khoản thành công!";
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IUserService extends IGenerateService<User> {
-//    Optional<User> findByUsername(String username);
+    Optional<User> findUserByName(String username);
 
     User findByUsername(String username);
 
@@ -29,4 +29,6 @@ public interface IUserService extends IGenerateService<User> {
 
     boolean existsByUsername(String username);
     Page<User> getUsersByRole_Name(ROLENAME rolename, PageRequest of);
+
+    void updateUser(User user);
 }
