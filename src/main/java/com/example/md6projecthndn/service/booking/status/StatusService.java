@@ -17,10 +17,8 @@ public class StatusService implements IStatusService {
 
     @Override
     public Status findById(Long id) {
-
         return statusRepository.findById(id).orElse(null);
     }
-
     @Override
     public void save(Status status) {
         statusRepository.save(status);

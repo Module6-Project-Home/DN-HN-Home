@@ -7,12 +7,12 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +29,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @NotBlank(message = "Tên người dùng không được để trống")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Tên người dùng chỉ được chứa chữ cái và số, không có ký tự đặc biệt")
@@ -55,9 +57,12 @@ public class User {
     @OneToMany(mappedBy = "owner")
     private Set<Property> properties;
 
+
     @JsonManagedReference("user-booking")
     @OneToMany(mappedBy = "guest")
     private Set<Booking> bookings;
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
@@ -69,6 +74,7 @@ public class User {
     @OneToMany(mappedBy = "guest")
     private Set<Review> reviews;
 
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -78,6 +84,24 @@ public class User {
     private LocalDateTime updatedAt;
 
     private boolean upgradeRequested;
+
+
+
+    public UserStatus.USER_STATUS getCurrentStatus() {
+        return userStatuses.stream().findFirst().orElse(null).getStatus();
+    }
+
+    public void setCurrentStatus(UserStatus.USER_STATUS newStatus) {
+        // Xóa trạng thái hiện tại
+        userStatuses.clear();
+
+        // Thêm trạng thái mới
+        UserStatus userStatus = new UserStatus();
+        userStatus.setStatus(newStatus);
+        userStatuses.add(userStatus);
+    }
+
+
 
     // Constructors, getters and setters
 }

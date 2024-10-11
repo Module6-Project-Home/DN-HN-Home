@@ -1,7 +1,7 @@
 package com.example.md6projecthndn.model.entity.property;
 
 
-import com.example.md6projecthndn.model.entity.booking.Booking;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +21,7 @@ public class Status {
 
     private String name; // Booked, Cancelled, Completed, Available, Unavailable, etc.
 
-
     @OneToMany(mappedBy = "status")
     private Set<Property> properties;
 
-    // Constructors, getters and setters
 }
