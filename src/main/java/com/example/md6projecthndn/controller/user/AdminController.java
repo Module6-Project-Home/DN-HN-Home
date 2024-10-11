@@ -30,40 +30,6 @@ public class AdminController {
     @Autowired
     private IRoleService roleService;
 
-
-    @PutMapping("/approve-upgrade")
-    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved) {
-        try {
-            User user = userService.findById(userId); // Kiểm tra người dùng
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
-
-            // Nếu phê duyệt, thay đổi vai trò
-            if (isApproved) {
-                Role userRole = roleService.findByName(ROLENAME.ROLE_USER); // Tìm vai trò ROLE_USER
-                Role hostRole = roleService.findByName(ROLENAME.ROLE_HOST); // Tìm vai trò ROLE_HOST
-
-                // Nếu tìm thấy vai trò ROLE_USER, loại bỏ nó
-                if (userRole != null) {
-                    user.getRoles().remove(userRole);
-                }
-
-                // Nếu tìm thấy vai trò ROLE_HOST, thêm nó vào
-                if (hostRole != null) {
-                    user.getRoles().add(hostRole);
-                }
-            } else {
-                // Nếu không phê duyệt, có thể thêm logic khác nếu cần
-            }
-
-            userService.save(user); // Lưu người dùng
-            return ResponseEntity.ok("User upgrade status updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId) {
         User user = userService.findById(userId);
@@ -81,23 +47,6 @@ public class AdminController {
         }
     }
 
-//    @GetMapping("/users")
-//    public ResponseEntity<List<User>> getUsersWithRoleUser() {
-//        List<User> users = userService.getUsersByRole(ROLENAME.ROLE_USER);
-//        return ResponseEntity.ok(users);
-//    }
-//@GetMapping("/users")
-//public ResponseEntity<List<UserDTO>> getUsersWithRoleUser() {
-//    List<User> users = userService.getUsersByRole(ROLENAME.ROLE_USER);
-//    List<UserDTO> userDetailsDTOs = users.stream()
-//            .map(user -> new UserDTO(
-//                    user.getFullName(),
-//                    user.getPhoneNumber(),
-//                    user.getCurrentStatus().name()
-//            ))
-//            .collect(Collectors.toList());
-//    return ResponseEntity.ok(userDetailsDTOs);
-//}
 
     @GetMapping("/users")// lấy danh sách người dùng theo role + phân trang 5 user 1 page
     public ResponseEntity<Page<UserDTO>> getUsersWithRoleUser(
@@ -165,6 +114,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     @PutMapping("/approve-upgrade")
     public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved) {
         try {
@@ -199,18 +149,19 @@ public class AdminController {
         }
     }
 
-    }
-
     @GetMapping("/user-detail")
     public ResponseEntity<UserDetailDTO> getUserDetail(@RequestParam("userId") Long userId) {
         UserDetailDTO userDetailDTO = userService.getUserDetails(userId);
-        if(userDetailDTO == null) {
+        if (userDetailDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(userDetailDTO);
     }
 
-
-
-
 }
+
+
+
+
+
+
