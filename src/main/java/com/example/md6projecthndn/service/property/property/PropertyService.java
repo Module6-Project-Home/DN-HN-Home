@@ -100,6 +100,11 @@ public class PropertyService implements IPropertyService {
     }
 
     @Override
+    public Long countByOwnerId(Long ownerId) {
+        return propertyRepository.countByOwnerId(ownerId);
+    }
+
+    @Override
     public Iterable<Property> findAll() {
         return propertyRepository.findAll();
     }
