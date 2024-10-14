@@ -1,12 +1,15 @@
 package com.example.md6projecthndn.controller.booking;
 
 
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.BookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
-import com.example.md6projecthndn.model.entity.booking.Status;
+import com.example.md6projecthndn.model.entity.booking.BookingStatus;
+import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
+import com.example.md6projecthndn.service.booking.bookingstatus.IBookingStatusService;
 import com.example.md6projecthndn.service.booking.status.IStatusService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
@@ -39,6 +42,9 @@ public class BookingController {
     @Autowired
     private IStatusService statusService;
 
+    @Autowired
+    private IBookingStatusService bookingStatusService;
+
     @PostMapping
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingDTO bookingDTO, BindingResult bindingResult) {
         try {
@@ -49,8 +55,8 @@ public class BookingController {
             );
             bookingDTO.setOverlappingBookings(overlappingBookings);
 
-            Status status = statusService.findById(bookingDTO.getStatus().getId());
-            bookingDTO.setStatus(status);
+            BookingStatus status = bookingStatusService.findById(bookingDTO.getBookingStatus().getId());
+            bookingDTO.setBookingStatus(status);
             Property property = propertyService.findById(bookingDTO.getProperty().getId());
             bookingDTO.setProperty(property);
             User user = userService.findByUsername(bookingDTO.getGuest().getUsername());
@@ -97,4 +103,16 @@ public class BookingController {
 
         return ResponseEntity.ok(overlappingBookings);
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<BookingByUserDTO>> getBookingHistory(
+           @RequestParam String userName
+    ){
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userName);
+        if(bookingByUserDTOList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(bookingByUserDTOList);
+    }
+
 }

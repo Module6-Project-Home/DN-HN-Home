@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -103,5 +104,9 @@ public class User {
 
 
     // Constructors, getters and setters
+
+    // This field represents whether the account is locked
+//    private boolean accountNonLocked;
+
 }
 

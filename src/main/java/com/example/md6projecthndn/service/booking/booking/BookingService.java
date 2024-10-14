@@ -1,8 +1,9 @@
 package com.example.md6projecthndn.service.booking.booking;
 
 
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
-import com.example.md6projecthndn.model.entity.booking.Status;
+import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.repository.booking.IBookingRepository;
 import com.example.md6projecthndn.service.booking.status.IStatusService;
@@ -12,8 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class BookingService implements IBookingService {
     private final IBookingRepository bookingRepository;
@@ -88,5 +90,24 @@ public class BookingService implements IBookingService {
     @Override
     public Page<Booking> findBookingByOwnerIdByPropertyId(Long ownerId, Long propertyId, Pageable pageable) {
         return bookingRepository.findBookingByOwnerIdByPropertyId(ownerId,propertyId,pageable);
+    }
+
+    @Override
+    public List<BookingByUserDTO> bookingByUser(String userName) {
+      List<Object[]>  results = bookingRepository.bookingByUser(userName);
+        List<BookingByUserDTO> bookingByUserDTOs = new ArrayList<>();
+
+        for (Object[] result : results) {
+            BookingByUserDTO bookingByUserDTO = new BookingByUserDTO(
+                    (String) result[0],
+                    (String) result[1],
+                    ((Number) result[2]).intValue(),
+                    ((Number) result[3]).doubleValue(),
+                    (String) result[4]
+            );
+            bookingByUserDTOs.add(bookingByUserDTO);
+        }
+
+        return bookingByUserDTOs;
     }
 }
