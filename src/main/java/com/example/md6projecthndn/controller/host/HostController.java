@@ -7,6 +7,9 @@ import com.example.md6projecthndn.model.entity.property.PropertyImage;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -73,6 +77,30 @@ public class HostController {
         }).toList();
 
         return ResponseEntity.ok(propertyDTOs);
+
+    }
+
+    @GetMapping("/listHomestay")
+    public ResponseEntity<Page<Property>> getHomestay(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        // Lấy thông tin từ SecurityContextHolder sau khi JWT đã được xác thực
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername(); // Lấy username từ UserDetails
+        }
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Lấy danh sách tài sản của chủ nhà
+        Page<Property> properties = propertyService.findByOwnerUsername(username, pageable);
+
+        return ResponseEntity.ok(properties);
 
     }
 }

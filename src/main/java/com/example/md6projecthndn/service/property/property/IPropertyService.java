@@ -45,5 +45,8 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     List<Property> findByOwnerUsername(String username);
 
+    Property updateProperty(Long id, PropertyDTO propertyDTO, String username);
+
+    Page<Property> findByOwnerUsername(String username, Pageable pageable);
 
 }
