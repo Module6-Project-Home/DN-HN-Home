@@ -13,6 +13,8 @@ import com.example.md6projecthndn.repository.property.IPropertyTypeRepository;
 import com.example.md6projecthndn.repository.property.IRoomTypeRepository;
 import com.example.md6projecthndn.repository.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,7 +42,10 @@ public class PropertyService implements IPropertyService {
     @Autowired
     private IStatusRepository statusRepository; // Thêm repository cho RoomType
 
+    @Autowired
+    private IPropertyImageRepository propertyImageRepository;
 
+    @Override
     public Property addPropertyPost(PropertyDTO propertyDTO) {
         // Tạo mới Property từ DTO trước
         Property property = Property.builder()
@@ -86,6 +91,56 @@ public class PropertyService implements IPropertyService {
         // Trả về Property đã được lưu cùng hình ảnh
         return property;
     }
+
+
+    @Override
+    public Property updateProperty(Long id, PropertyDTO propertyDTO, String username) {
+        // Kiểm tra xem Property có tồn tại không
+        Property existingProperty = propertyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Property not found with id: " + id));
+
+        // Xác nhận owner của Property
+        if (!existingProperty.getOwner().getUsername().equals(username)) {
+            throw new RuntimeException("You are not authorized to update this property.");
+        }
+
+        // Cập nhật thông tin Property
+        existingProperty.setName(propertyDTO.getName());
+        existingProperty.setPropertyType(propertyTypeRepository.findByName(propertyDTO.getPropertyType())
+                .orElseThrow(() -> new RuntimeException("Property type not found")));
+        existingProperty.setRoomType(roomTypeRepository.findByName(propertyDTO.getRoomType())
+                .orElseThrow(() -> new RuntimeException("Room type not found")));
+        existingProperty.setAddress(propertyDTO.getAddress());
+        existingProperty.setBedrooms(propertyDTO.getBedrooms());
+        existingProperty.setBathrooms(propertyDTO.getBathrooms());
+        existingProperty.setDescription(propertyDTO.getDescription());
+        existingProperty.setPricePerNight(propertyDTO.getPricePerNight());
+        existingProperty.setStatus(statusRepository.findByName(propertyDTO.getStatus())
+                .orElseThrow(() -> new RuntimeException("Status not found")));
+
+        // Xóa các hình ảnh cũ liên quan đến Property này
+        imageRepository.deleteByProperty(existingProperty.getId());
+
+        // Xử lý các hình ảnh cập nhật nếu có
+        if (propertyDTO.getImageUrls() != null && !propertyDTO.getImageUrls().isEmpty()) {
+            Set<PropertyImage> images = new HashSet<>();
+            for (String imageUrl : propertyDTO.getImageUrls()) {
+                PropertyImage image = PropertyImage.builder()
+                        .imageUrl(imageUrl)
+                        .property(existingProperty)
+                        .build();
+                images.add(image);
+            }
+            existingProperty.setImages(images);
+            imageRepository.saveAll(images);
+        } else {
+            existingProperty.getImages().clear(); // Nếu không có ảnh mới, xóa hết ảnh cũ
+        }
+
+        // Lưu các thay đổi vào database
+        return propertyRepository.save(existingProperty);
+    }
+
 
 
     @Override
@@ -202,4 +257,8 @@ public class PropertyService implements IPropertyService {
         return properties;
     }
 
+    @Override
+    public Page<Property> findByOwnerUsername(String username, Pageable pageable) {
+        return propertyRepository.findByOwnerUsername(username, pageable);
+    }
 }
