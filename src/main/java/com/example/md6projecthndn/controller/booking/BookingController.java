@@ -106,9 +106,9 @@ public class BookingController {
 
     @GetMapping("/history")
     public ResponseEntity<List<BookingByUserDTO>> getBookingHistory(
-           @RequestParam String userName
+           @RequestParam Long userId
     ){
-        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userName);
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
         if(bookingByUserDTOList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

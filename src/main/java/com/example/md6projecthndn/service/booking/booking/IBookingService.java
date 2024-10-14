@@ -20,7 +20,7 @@ public interface IBookingService extends IGenerateService<Booking> {
 
     Page<Booking> findBookingByOwnerIdByPropertyId(Long ownerId, Long propertyId, Pageable pageable);
 
-    List<BookingByUserDTO> bookingByUser(@Param("userName") String userName);
+    List<BookingByUserDTO> bookingByUser(@Param("userId") Long userID);
 
 
 }
