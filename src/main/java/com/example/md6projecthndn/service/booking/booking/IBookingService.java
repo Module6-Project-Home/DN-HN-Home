@@ -13,14 +13,15 @@ import java.util.List;
 
 public interface IBookingService extends IGenerateService<Booking> {
     public void updatePropertyStatusIfCheckOutDatePassed();
+
     List<Booking> findOverlappingBookings(Long propertyId, LocalDate startDate, LocalDate endDate);
 
     Page<Booking> findBookingByGuestId(Long guestId, Pageable pageable);
+
     Page<Booking> findBookingByOwnerId(Long ownerId, Pageable pageable);
 
     Page<Booking> findBookingByOwnerIdByPropertyId(Long ownerId, Long propertyId, Pageable pageable);
 
     List<BookingByUserDTO> bookingByUser(@Param("userId") Long userId);
-
 
 }
