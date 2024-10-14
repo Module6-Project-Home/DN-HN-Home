@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class HostController {
 
     @Autowired
     private IUserService userService;
-
+//
 
     @GetMapping("/listMyHomestay")
     public ResponseEntity<List<PropertyDTO>> getMyHomestay() {
@@ -74,5 +75,12 @@ public class HostController {
 
         return ResponseEntity.ok(propertyDTOs);
 
+    }
+
+    // Đếm số lượng phòng của chủ nhà
+    @GetMapping("/countHostProperties")
+    public ResponseEntity<Long> countHostProperties(@RequestParam("ownerId") Long ownerId) {
+        Long propertyCount = propertyService.countByOwnerId(ownerId);
+        return ResponseEntity.ok(propertyCount);
     }
 }
