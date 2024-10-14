@@ -84,4 +84,5 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             "LIMIT 5")
     List<Object[]> findPropertyTopBookingDTO();
 
+    Long countByOwnerId(Long ownerId);
 }
