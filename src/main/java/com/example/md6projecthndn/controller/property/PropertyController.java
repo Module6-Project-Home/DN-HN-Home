@@ -189,35 +189,4 @@ public class PropertyController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable Long id, @Valid @RequestBody PropertyDTO propertyDTO) {
-        // Lấy thông tin từ SecurityContextHolder sau khi JWT đã được xác thực
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            username = userDetails.getUsername(); // Lấy username từ UserDetails
-        }
-
-        if (username == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        User owner = userService.findByUsername(username);
-        if (owner == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
-        // Gọi service để cập nhật Property
-        Property updatedProperty = propertyService.updateProperty(id, propertyDTO, username);
-
-        return ResponseEntity.ok(updatedProperty);
-    }
-
-
-
-
-
-
 }

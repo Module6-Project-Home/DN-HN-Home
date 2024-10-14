@@ -1,4 +1,7 @@
 package com.example.md6projecthndn.model.entity.property;
+
+
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

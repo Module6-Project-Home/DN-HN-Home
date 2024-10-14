@@ -93,8 +93,8 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<BookingByUserDTO> bookingByUser(Long userId) {
-      List<Object[]>  results = bookingRepository.bookingByUser(userId);
+    public List<BookingByUserDTO> bookingByUser(String userName) {
+      List<Object[]>  results = bookingRepository.bookingByUser(userName);
         List<BookingByUserDTO> bookingByUserDTOs = new ArrayList<>();
 
         for (Object[] result : results) {

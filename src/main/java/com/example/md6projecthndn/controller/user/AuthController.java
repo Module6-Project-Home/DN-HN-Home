@@ -45,13 +45,9 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             System.out.println("Authentication successful: " + authentication.isAuthenticated());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtService.generateTokenLogin(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = userService.findByUsername(user.getUsername());
-            //kiểm tra tài khoản đăng nhập có bị khoá không
-            if ("SUSPENDED".equalsIgnoreCase(currentUser.getCurrentStatus().name())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tài khoản đang bị khoá");
-            }
-            String jwt = jwtService.generateTokenLogin(authentication);
             return ResponseEntity.ok(new JwtResponse(currentUser.getId(), jwt, userDetails.getUsername(), userDetails.getUsername(), userDetails.getAuthorities()));
         } catch (Exception e) {
             System.out.println("Authentication failed: " + e.getMessage());
