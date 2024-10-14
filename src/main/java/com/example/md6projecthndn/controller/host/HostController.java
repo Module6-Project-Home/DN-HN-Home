@@ -31,7 +31,7 @@ public class HostController {
 
     @Autowired
     private IUserService userService;
-
+//
 
     @GetMapping("/listMyHomestay")
     public ResponseEntity<List<PropertyDTO>> getMyHomestay() {
@@ -80,6 +80,7 @@ public class HostController {
 
     }
 
+
     @GetMapping("/listHomestay")
     public ResponseEntity<Page<Property>> getHomestay(@RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "10") int size) {
@@ -101,6 +102,13 @@ public class HostController {
         Page<Property> properties = propertyService.findByOwnerUsername(username, pageable);
 
         return ResponseEntity.ok(properties);
+    }
+
+    // Đếm số lượng phòng của chủ nhà
+    @GetMapping("/countHostProperties")
+    public ResponseEntity<Long> countHostProperties(@RequestParam("ownerId") Long ownerId) {
+        Long propertyCount = propertyService.countByOwnerId(ownerId);
+        return ResponseEntity.ok(propertyCount);
 
     }
 }

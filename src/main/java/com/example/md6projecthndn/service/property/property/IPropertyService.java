@@ -49,4 +49,5 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     Page<Property> findByOwnerUsername(String username, Pageable pageable);
 
+    Long countByOwnerId(Long ownerId);
 }
