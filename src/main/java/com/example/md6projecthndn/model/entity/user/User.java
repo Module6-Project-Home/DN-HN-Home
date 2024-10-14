@@ -52,6 +52,9 @@ public class User {
     private String address;
 
     private String avatar;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserStatus> userStatuses;
+
 
     @JsonManagedReference("user-property")
     @OneToMany(mappedBy = "owner")
@@ -67,8 +70,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<UserStatus> userStatuses;
 
     @JsonManagedReference("user-review")
     @OneToMany(mappedBy = "guest")

@@ -140,7 +140,7 @@ public class LoginGG {
 
     private String determineRedirectUrl(Set<Role> roles) {
         if (roles.stream().anyMatch(role -> role.getName().equals(ROLENAME.ROLE_HOST))) {
-            return "http://localhost:3000/host/dashboard"; // Adjust the URL to your frontend
+            return "http://localhost:3000/host/listMyHome"; // Adjust the URL to your frontend
         } else if (roles.stream().anyMatch(role -> role.getName().equals(ROLENAME.ROLE_ADMIN))) {
             return "http://localhost:3000/admin/dashboard"; // Adjust the URL to your frontend
         } else {
