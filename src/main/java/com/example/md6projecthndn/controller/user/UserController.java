@@ -1,4 +1,4 @@
-package com.example.md6projecthndn.controller;
+package com.example.md6projecthndn.controller.user;
 
 
 import com.example.md6projecthndn.model.dto.UserProfileDTO;
@@ -82,17 +82,18 @@ public class UserController {
     }
 
     @PutMapping("/update-profile")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserProfileDTO user, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getFieldErrors());
         }
-        if (!user.getPassword().equals(user.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Passwords do not match");
-        }
-        userService.updateUser(user);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userService.findByUsername(currentUsername);
+
+        userService.updateUser(currentUser, user);
         return ResponseEntity.ok().body("User updated successfully");
     }
-
 
     @PutMapping("/request-upgrade")
     public ResponseEntity<String> requestUpgrade(@RequestParam Long userId) {
@@ -111,5 +112,27 @@ public class UserController {
         // Lấy thông tin người dùng từ Authentication
         String username = authentication.getName(); // Lấy tên người dùng từ Authentication
         return userService.findByUsername(username); // Gọi service để lấy thông tin người dùng
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword){
+
+        // Lấy thông tin người dùng đang đăng nhập
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        // Lấy thông tin người dùng từ username
+        User currentUser = userService.findByUsername(currentUsername);
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
+        }
+
+        boolean isUpdated = userService.changePassword(currentUser, oldPassword, newPassword);
+
+        if(isUpdated){
+            return ResponseEntity.ok("Thay đổi mật khẩu thành công!");
+        } else {
+            return ResponseEntity.badRequest().body("Thay đổi mật khẩu thất bại!");
+        }
     }
 }
