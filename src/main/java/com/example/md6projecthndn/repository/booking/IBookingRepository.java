@@ -33,6 +33,6 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM bookings WHERE property_id IN (SELECT id FROM properties WHERE owner_id = :ownerId AND property_id = :propertyId)")
     Page<Booking> findBookingByOwnerIdByPropertyId(@Param("ownerId") Long ownerId, @Param("propertyId") Long propertyId, Pageable pageable);
 
-    @Query(nativeQuery = true,value = "select p.name, p.address, DATEDIFF(MIN( check_out_date), MIN(check_in_date) ) as rental_period, SUM(p.price_per_night * DATEDIFF(b.check_out_date, b.check_in_date)) AS total_spent, bs.status from users u join bookings b on u.id = b.guest_id join properties p on b.property_id = p.id join booking_status bs on b.booking_status_id = bs.id where u.username = :userName group by p.name, p.address, bs.status;")
-   List<Object[]>  bookingByUser(@Param("userName") String userName);
+    @Query(nativeQuery = true,value = "select p.name, p.address, DATEDIFF(MIN( check_out_date), MIN(check_in_date) ) as rental_period, SUM(p.price_per_night * DATEDIFF(b.check_out_date, b.check_in_date)) AS total_spent, bs.status from users u join bookings b on u.id = b.guest_id join properties p on b.property_id = p.id join booking_status bs on b.booking_status_id = bs.id where u.id = :userId group by p.name, p.address, bs.status;")
+   List<Object[]>  bookingByUser(@Param("userId") Long userId);
 }

@@ -88,6 +88,10 @@ public class UserService implements IUserService, UserDetailsService {
         return userRepository.findAllByRoles_Name(rolename, of);
     }
 
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
 
     @Override
@@ -134,6 +138,11 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public List<User> findUsersRequestingUpgrade() {
+        return userRepository.findByUpgradeRequested(true);
     }
 
     @Override

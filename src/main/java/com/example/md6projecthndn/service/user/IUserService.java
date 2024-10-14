@@ -29,7 +29,11 @@ public interface IUserService extends IGenerateService<User> {
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);
+
+    List<User> findUsersRequestingUpgrade();
     Page<User> getUsersByRole_Name(ROLENAME rolename, PageRequest of);
+
+    User findByEmail(String email);
 
     UserDetailDTO getUserDetails(Long id);
 }

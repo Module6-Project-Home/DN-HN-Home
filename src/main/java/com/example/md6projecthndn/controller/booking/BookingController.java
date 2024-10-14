@@ -5,8 +5,8 @@ import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.BookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.BookingStatus;
-import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.Status;
+import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.booking.bookingstatus.IBookingStatusService;
@@ -107,9 +107,9 @@ public class BookingController {
 
     @GetMapping("/history")
     public ResponseEntity<?> getBookingHistory(
-           @RequestParam String userName
+           @RequestParam Long userId
     ){
-        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userName);
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
         if(bookingByUserDTOList.isEmpty()){
             Map<String, String> response = new HashMap<>();
             response.put("message", "Bạn chưa có booking nào.");
