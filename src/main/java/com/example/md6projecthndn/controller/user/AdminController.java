@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -172,10 +175,12 @@ public class AdminController {
     }
 
     @GetMapping("/user-detail")
-    public ResponseEntity<UserDetailDTO> getUserDetail(@RequestParam("userId") Long userId) {
+    public ResponseEntity<?> getUserDetail(@RequestParam("userId") Long userId) {
         UserDetailDTO userDetailDTO = userService.getUserDetails(userId);
         if (userDetailDTO == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Không tìm thấy thông tin người dùng.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(userDetailDTO);
     }

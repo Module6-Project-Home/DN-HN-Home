@@ -58,6 +58,8 @@ public class BookingController {
             BookingStatus status = bookingStatusService.findById(bookingDTO.getBookingStatus().getId());
             bookingDTO.setBookingStatus(status);
             Property property = propertyService.findById(bookingDTO.getProperty().getId());
+            Status newStatus = statusService.findById(2l);
+            property.setStatus(newStatus);
             bookingDTO.setProperty(property);
             User user = userService.findByUsername(bookingDTO.getGuest().getUsername());
             bookingDTO.setGuest(user);
@@ -105,14 +107,19 @@ public class BookingController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<BookingByUserDTO>> getBookingHistory(
-           @RequestParam Long userId
-    ){
+    public ResponseEntity<?> getBookingHistory(@RequestParam Long userId) {
         List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
-        if(bookingByUserDTOList.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        if (bookingByUserDTOList.isEmpty()) {
+            // Trả về mảng rỗng với status OK thay vì NOT_FOUND
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Bạn chưa có booking nào.");
+            return ResponseEntity.ok(response);
         }
+
+        // Nếu có booking, trả về danh sách
         return ResponseEntity.ok(bookingByUserDTOList);
     }
+
 
 }

@@ -17,8 +17,7 @@ import java.util.Optional;
 
 @Repository
 public interface IUserRepository extends JpaRepository<User, Long> {
-//    Optional<User> findByUsername(String username);
-
+    Optional<User> findUserByUsername(String username);
 
     User findByUsername(String username);
 
@@ -38,6 +37,18 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
     List<User> findByUpgradeRequested(boolean upgradeRequested);
 
-    @Query(nativeQuery = true, value =  "SELECT u.id, u.avatar,  u.username, u.full_name, u.phone_number, uus.user_statuses_id as user_status, SUM(p.price_per_night * DATEDIFF(b.check_out_date, b.check_in_date)) AS total_spent FROM users u JOIN bookings b ON u.id = b.guest_id JOIN properties p ON b.property_id = p.id join users_user_statuses uus on u.id = uus.user_id WHERE u.id = :userId GROUP BY u.id, u.avatar, u.username, u.full_name, u.phone_number, uus.user_statuses_id;")
+    @Query(nativeQuery = true, value =  "SELECT u.id, COALESCE(u.avatar, '') AS avatar,\n" +
+            "    COALESCE(u.full_name, 'cập nhật') AS full_name,\n" +
+            "    u.username,\n" +
+            "    u.phone_number,\n" +
+            "    uus.user_statuses_id AS user_status,\n" +
+            "    COALESCE(SUM(CASE WHEN bs.id = 3 THEN p.price_per_night * DATEDIFF(b.check_out_date, b.check_in_date) ELSE 0 END), 0) AS total_spent\n" +
+            "FROM users u\n" +
+            "         LEFT JOIN bookings b ON u.id = b.guest_id\n" +
+            "         LEFT JOIN properties p ON b.property_id = p.id\n" +
+            "         LEFT JOIN booking_status bs ON b.booking_status_id = bs.id\n" +
+            "         JOIN users_user_statuses uus ON u.id = uus.user_id\n" +
+            "WHERE u.id = :userId\n" +
+            "GROUP BY u.id, avatar, u.username, u.phone_number, uus.user_statuses_id;")
     Object getUserDetails(@Param("userId") Long userId);
 }
