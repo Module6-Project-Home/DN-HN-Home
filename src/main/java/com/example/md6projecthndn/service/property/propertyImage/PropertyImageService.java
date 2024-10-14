@@ -43,10 +43,7 @@ public class PropertyImageService implements IPropertyImageService {
     }
 
 
-    @Override
-    public void deleteAllImageByIdProperty(Long id) {
-        propertyImageRepository.deleteAllImageByIdProperty(id);
-    }
+
 
 
 
