@@ -21,7 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +57,8 @@ public class BookingController {
             BookingStatus status = bookingStatusService.findById(bookingDTO.getBookingStatus().getId());
             bookingDTO.setBookingStatus(status);
             Property property = propertyService.findById(bookingDTO.getProperty().getId());
+            Status newStatus = statusService.findById(2l);
+            property.setStatus(newStatus);
             bookingDTO.setProperty(property);
             User user = userService.findByUsername(bookingDTO.getGuest().getUsername());
             bookingDTO.setGuest(user);
@@ -105,12 +106,14 @@ public class BookingController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<BookingByUserDTO>> getBookingHistory(
-           @RequestParam String userName
+    public ResponseEntity<?> getBookingHistory(
+           @RequestParam Long userId
     ){
-        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userName);
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
         if(bookingByUserDTOList.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Bạn chưa có booking nào.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(bookingByUserDTOList);
     }
