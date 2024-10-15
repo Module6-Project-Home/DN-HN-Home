@@ -14,15 +14,24 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "booking_status")
 public class BookingStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, unique = true)
+    private BookingStatusEnum status;
+
+    @Column(name = "description", nullable = false)
     private String description;
 
     @JsonManagedReference("booking_status-booking")
     @OneToMany(mappedBy = "bookingStatus")
     private Set<Booking> bookings;
-}
 
+    public BookingStatus(BookingStatusEnum status, String description) {
+        this.status = status;
+        this.description = description;
+    }
+}

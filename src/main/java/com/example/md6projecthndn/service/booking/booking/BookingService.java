@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -101,9 +102,10 @@ public class BookingService implements IBookingService {
             BookingByUserDTO bookingByUserDTO = new BookingByUserDTO(
                     (String) result[0],
                     (String) result[1],
-                    ((Number) result[2]).intValue(),
-                    ((Number) result[3]).doubleValue(),
-                    (String) result[4]
+                    ((java.sql.Date) result[2]).toLocalDate(),
+                    ((java.sql.Date) result[3]).toLocalDate(),
+                    ((Number) result[4]).doubleValue(),
+                    (String) result[5]
             );
             bookingByUserDTOs.add(bookingByUserDTO);
         }

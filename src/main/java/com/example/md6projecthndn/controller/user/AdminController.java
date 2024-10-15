@@ -1,12 +1,14 @@
 package com.example.md6projecthndn.controller.user;
 
 
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
+import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
 import com.example.md6projecthndn.service.user.status.IUserStatusService;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private IRoleService roleService;
+
+    @Autowired
+    private IBookingService bookingService;
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId) {
@@ -161,6 +167,21 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(userDetailDTO);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getBookingHistory(@RequestParam Long userId) {
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
+
+        if (bookingByUserDTOList.isEmpty()) {
+            // Trả về mảng rỗng với status OK thay vì NOT_FOUND
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Người dùng chưa thuê nhà.");
+            return ResponseEntity.ok(response);
+        }
+
+        // Nếu có booking, trả về danh sách
+        return ResponseEntity.ok(bookingByUserDTOList);
     }
 
 }
