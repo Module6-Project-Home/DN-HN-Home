@@ -135,4 +135,10 @@ public class UserController {
             return ResponseEntity.badRequest().body("Thay đổi mật khẩu thất bại!");
         }
     }
+
+    @GetMapping("/findByUsername")
+    public User findByUsername(@RequestParam String username) {
+        return userService.findByUsername(username);
+    }
+
 }

@@ -82,9 +82,6 @@ public class BookingController {
     }
 
 
-
-
-
     @GetMapping("/{bookingId}")
     public ResponseEntity<?> getBookingDetails(@PathVariable Long bookingId) {
         Booking booking = bookingService.findById(bookingId);
@@ -105,17 +102,7 @@ public class BookingController {
         return ResponseEntity.ok(overlappingBookings);
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<?> getBookingHistory(
-           @RequestParam Long userId
-    ){
-        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
-        if(bookingByUserDTOList.isEmpty()){
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Bạn chưa có booking nào.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        return ResponseEntity.ok(bookingByUserDTOList);
-    }
+
+
 
 }

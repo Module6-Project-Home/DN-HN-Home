@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.controller.user;
 
 
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.HostDetailDTO;
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
@@ -8,6 +9,10 @@ import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
+
+import com.example.md6projecthndn.service.booking.booking.IBookingService;
+
+import com.example.md6projecthndn.service.email.IEmailService;
 import com.example.md6projecthndn.repository.user.IUserRepository;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
@@ -18,6 +23,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -35,20 +44,34 @@ public class AdminController {
     @Autowired
     private IRoleService roleService;
 
+    @Autowired
+
+    private IEmailService emailService;
+
+    @Autowired
+    private IBookingService bookingService;
+
     @PutMapping("/deny-upgrade")
-    public ResponseEntity<String> denyUpgrade(@RequestParam Long userId) {
+    public ResponseEntity<String> denyUpgrade(@RequestParam Long userId, @RequestParam String reason) {
         User user = userService.findById(userId);
         if (user != null) {
             // Nếu người dùng có yêu cầu nâng cấp, đặt lại trạng thái yêu cầu nâng cấp
             if (user.isUpgradeRequested()) {
                 user.setUpgradeRequested(false); // Đặt lại trạng thái yêu cầu nâng cấp
-                userService.save(user);
-                return ResponseEntity.ok("Yêu cầu nâng cấp đã bị từ chối");
+
+                // Gửi email thông báo từ chối yêu cầu nâng cấp
+                String emailSubject = "Yêu cầu nâng cấp chủ nhà bị từ chối";
+                String emailContent = "Xin chào " + user.getFullName() + ",\n\nYêu cầu trở thành chủ nhà của bạn đã bị từ chối. Lý do: " + reason;
+
+                emailService.sendEmail(user.getEmail(), emailSubject, emailContent); // Gửi email cho người dùng
+
+                userService.save(user); // Lưu thay đổi
+                return ResponseEntity.ok("Yêu cầu nâng cấp đã bị từ chối và email đã được gửi cho người dùng.");
             } else {
-                return ResponseEntity.badRequest().body("Không có yêu cầu nâng cấp từ người dùng này");
+                return ResponseEntity.badRequest().body("Không có yêu cầu nâng cấp từ người dùng này.");
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Người dùng không tồn tại.");
         }
     }
 
@@ -123,13 +146,14 @@ public class AdminController {
     }
 
     @PutMapping("/approve-upgrade")
-    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved) {
+    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved,@RequestParam String reason) {
         try {
             User user = userService.findById(userId); // Kiểm tra người dùng
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-
+            String emailSubject;
+            String emailContent;
             // Nếu phê duyệt, thay đổi vai trò
             if (isApproved) {
                 Role userRole = roleService.findByName(ROLENAME.ROLE_USER); // Tìm vai trò ROLE_USER
@@ -139,15 +163,25 @@ public class AdminController {
                 if (userRole != null) {
                     user.getRoles().remove(userRole);
                 }
-
+                emailSubject = "Yêu cầu nâng cấp chủ nhà đã được chấp thuận";
+                emailContent = "Xin chào " + user.getFullName() + ",\n\nYêu cầu trở thành chủ nhà của bạn đã được phê duyệt. Lý do: " + reason;
                 // Nếu tìm thấy vai trò ROLE_HOST, thêm nó vào
                 if (hostRole != null) {
                     user.getRoles().add(hostRole);
                     user.setUpgradeRequested(false); // Đặt lại trạng thái yêu cầu nâng cấp
                 }
+
+
+
             } else {
                 // Nếu không phê duyệt, có thể thêm logic khác nếu cần
+                user.setUpgradeRequested(false); // Hủy yêu cầu nâng cấp
+
+                emailSubject = "Yêu cầu nâng cấp chủ nhà bị từ chối";
+                emailContent = "Xin chào " + user.getFullName() + ",\n\nYêu cầu trở thành chủ nhà của bạn đã bị từ chối. Lý do: " + reason;
             }
+// Gửi email thông báo
+            emailService.sendEmail(user.getEmail(), emailSubject, emailContent);
 
             userService.save(user); // Lưu người dùng
             return ResponseEntity.ok("User upgrade status updated successfully.");
@@ -157,12 +191,29 @@ public class AdminController {
     }
 
     @GetMapping("/user-detail")
-    public ResponseEntity<UserDetailDTO> getUserDetail(@RequestParam("userId") Long userId) {
+    public ResponseEntity<?> getUserDetail(@RequestParam("userId") Long userId) {
         UserDetailDTO userDetailDTO = userService.getUserDetails(userId);
         if (userDetailDTO == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Không tìm thấy thông tin người dùng.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         return ResponseEntity.ok(userDetailDTO);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getBookingHistory(@RequestParam Long userId) {
+        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
+
+        if (bookingByUserDTOList.isEmpty()) {
+            // Trả về mảng rỗng với status OK thay vì NOT_FOUND
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Người dùng chưa thuê nhà.");
+            return ResponseEntity.ok(response);
+        }
+
+        // Nếu có booking, trả về danh sách
+        return ResponseEntity.ok(bookingByUserDTOList);
     }
 
 }

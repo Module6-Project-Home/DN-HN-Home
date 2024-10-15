@@ -7,6 +7,9 @@ import com.example.md6projecthndn.model.entity.property.PropertyImage;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -59,7 +62,7 @@ public class HostController {
             dto.setOwner(p.getOwner().getUsername());
             dto.setBathrooms(p.getBathrooms());
             dto.setBedrooms(p.getBedrooms());
-            dto.setStatus(p.getStatus().getName());
+            dto.setStatus(p.getStatus().getName().toString());
             dto.setDescription(p.getDescription());
             dto.setPropertyType(p.getPropertyType().getName());
             dto.setRoomType(p.getRoomType().getName());
@@ -77,10 +80,35 @@ public class HostController {
 
     }
 
+
+    @GetMapping("/listHomestay")
+    public ResponseEntity<Page<Property>> getHomestay(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        // Lấy thông tin từ SecurityContextHolder sau khi JWT đã được xác thực
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            username = userDetails.getUsername(); // Lấy username từ UserDetails
+        }
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Lấy danh sách tài sản của chủ nhà
+        Page<Property> properties = propertyService.findByOwnerUsername(username, pageable);
+
+        return ResponseEntity.ok(properties);
+    }
+
     // Đếm số lượng phòng của chủ nhà
     @GetMapping("/countHostProperties")
     public ResponseEntity<Long> countHostProperties(@RequestParam("ownerId") Long ownerId) {
         Long propertyCount = propertyService.countByOwnerId(ownerId);
         return ResponseEntity.ok(propertyCount);
+
     }
 }
