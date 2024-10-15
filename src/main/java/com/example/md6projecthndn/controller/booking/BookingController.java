@@ -102,20 +102,7 @@ public class BookingController {
         return ResponseEntity.ok(overlappingBookings);
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<?> getBookingHistory(@RequestParam Long userId) {
-        List<BookingByUserDTO> bookingByUserDTOList = bookingService.bookingByUser(userId);
 
-        if (bookingByUserDTOList.isEmpty()) {
-            // Trả về mảng rỗng với status OK thay vì NOT_FOUND
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Bạn chưa có booking nào.");
-            return ResponseEntity.ok(response);
-        }
-
-        // Nếu có booking, trả về danh sách
-        return ResponseEntity.ok(bookingByUserDTOList);
-    }
 
 
 }

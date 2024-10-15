@@ -38,7 +38,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     List<User> findByUpgradeRequested(boolean upgradeRequested);
 
     @Query(nativeQuery = true, value =  "SELECT u.id, COALESCE(u.avatar, '') AS avatar,\n" +
-            "    COALESCE(u.full_name, 'cập nhật') AS full_name,\n" +
+            "    COALESCE(u.full_name, 'Chưa cập nhật') AS full_name,\n" +
             "    u.username,\n" +
             "    u.phone_number,\n" +
             "    uus.user_statuses_id AS user_status,\n" +

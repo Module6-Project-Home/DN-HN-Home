@@ -79,7 +79,7 @@ public class Property {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
-    private Status status; // Sử dụng bảng Status để quản lý trạng thái
+    private Status status;
 
     @JsonManagedReference("property-booking")
     @OneToMany(mappedBy = "property")
