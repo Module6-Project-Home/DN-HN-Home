@@ -100,11 +100,12 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public void updateUser(User currentUser, UserProfileDTO userProfileDTO) {
         currentUser.setFullName(userProfileDTO.getFullName());
-        if(Objects.equals(userProfileDTO.getAvatar(), "")){
+        if(Objects.equals(userProfileDTO.getAvatar(), null)){
             currentUser.setAvatar("https://firebasestorage.googleapis.com/v0/b/home-dn.appspot.com/o/images%2Favatar.jpg?alt=media&token=f43bdd14-8aa5-4364-afc7-509f6f72a172");
         } else {
             currentUser.setAvatar(userProfileDTO.getAvatar());
         }
+        currentUser.setPhoneNumber(userProfileDTO.getPhoneNumber());
         currentUser.setAddress(userProfileDTO.getAddress());
         userRepository.save(currentUser);
     }
