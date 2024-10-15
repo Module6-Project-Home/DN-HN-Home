@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.controller.user;
 
 
+import com.example.md6projecthndn.model.dto.HostDetailDTO;
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.dto.UserDetailDTO;
@@ -82,22 +83,51 @@ public class AdminController {
     }
 
 
-    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
-    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
+//    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
+//        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+//                user.getFullName(),
+//                user.getPhoneNumber(),
+//                user.getCurrentStatus().name(),
+//                user.getId(),
+//                user.getUsername(),
+//                user.getAvatar(),
+//                user.getAddress(),
+//                user.isUpgradeRequested()
+//        ));
+//        return ResponseEntity.ok(UserDTOs);
+//    }
+
+    @GetMapping("/hosts")
+    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
-        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-                user.getFullName(),
-                user.getPhoneNumber(),
-                user.getCurrentStatus().name(),
-                user.getId(),
-                user.getUsername(),
-                user.getAvatar(),
-                user.getAddress(),
-                user.isUpgradeRequested()
-        ));
-        return ResponseEntity.ok(UserDTOs);
+        Page<HostDetailDTO> hostDetailDTOs = users.map(user -> {
+            double totalRevenue = user.getProperties().stream()
+                    .flatMap(property -> property.getBookings().stream())
+                    .filter(booking -> booking.getBookingStatus().getStatus().equals("COMPLETED"))
+                    .mapToDouble(booking -> {
+                        long days = java.time.temporal.ChronoUnit.DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate());
+                        return days * booking.getProperty().getPricePerNight();
+                    })
+                    .sum();
+
+            return new HostDetailDTO(
+                    user.getFullName(),
+                    user.getPhoneNumber(),
+                    user.getCurrentStatus().name(),
+                    user.getId(),
+                    user.getUsername(),
+                    user.getAvatar(),
+                    user.getAddress(),
+                    totalRevenue
+            );
+        });
+        return ResponseEntity.ok(hostDetailDTOs);
     }
 
     @PutMapping("/update-status") // cập nhạt status cho user,host
