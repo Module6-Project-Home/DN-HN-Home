@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface IStatusRepository extends JpaRepository<Status, Long> {
-    Optional<Status> findByName(String name); // Tìm Status theo tên
+    Optional<Status> findByName(Status.PROPERTY_STATUS name); // Tìm Status theo enum PROPERTY_STATUS
 }

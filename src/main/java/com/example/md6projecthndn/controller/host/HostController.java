@@ -62,7 +62,7 @@ public class HostController {
             dto.setOwner(p.getOwner().getUsername());
             dto.setBathrooms(p.getBathrooms());
             dto.setBedrooms(p.getBedrooms());
-            dto.setStatus(p.getStatus().getName());
+            dto.setStatus(p.getStatus().getName().toString());
             dto.setDescription(p.getDescription());
             dto.setPropertyType(p.getPropertyType().getName());
             dto.setRoomType(p.getRoomType().getName());
