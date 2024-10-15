@@ -105,6 +105,7 @@ public class UserService implements IUserService, UserDetailsService {
         } else {
             currentUser.setAvatar(userProfileDTO.getAvatar());
         }
+        currentUser.setPhoneNumber(userProfileDTO.getPhoneNumber());
         currentUser.setAddress(userProfileDTO.getAddress());
         userRepository.save(currentUser);
     }
