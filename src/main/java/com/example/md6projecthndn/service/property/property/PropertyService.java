@@ -59,8 +59,9 @@ public class PropertyService implements IPropertyService {
                 .bathrooms(propertyDTO.getBathrooms())
                 .description(propertyDTO.getDescription())
                 .pricePerNight(propertyDTO.getPricePerNight())
-                .status(statusRepository.findByName(propertyDTO.getStatus())
-                        .orElseThrow(() -> new RuntimeException("Status not found")))
+                .status(statusRepository.findByName(
+                        Status.PROPERTY_STATUS.valueOf(propertyDTO.getStatus()) // Chuyển chuỗi thành enum
+                ).orElseThrow(() -> new RuntimeException("Status not found")))
                 .owner(userRepository.findByUsername(propertyDTO.getOwner()))
                 .build();
 
@@ -115,8 +116,9 @@ public class PropertyService implements IPropertyService {
         existingProperty.setBathrooms(propertyDTO.getBathrooms());
         existingProperty.setDescription(propertyDTO.getDescription());
         existingProperty.setPricePerNight(propertyDTO.getPricePerNight());
-        existingProperty.setStatus(statusRepository.findByName(propertyDTO.getStatus())
-                .orElseThrow(() -> new RuntimeException("Status not found")));
+        existingProperty.setStatus(statusRepository.findByName(
+                Status.PROPERTY_STATUS.valueOf(propertyDTO.getStatus()) // Chuyển chuỗi thành enum
+        ).orElseThrow(() -> new RuntimeException("Status not found")));
 
         // Xóa các hình ảnh cũ liên quan đến Property này
         imageRepository.deleteByProperty(existingProperty.getId());
