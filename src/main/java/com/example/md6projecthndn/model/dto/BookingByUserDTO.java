@@ -16,13 +16,15 @@ public class BookingByUserDTO {
     private LocalDate checkOutDate;
     private Double totalSpent;
     private String status;
+    private Long bookingId;
 
-    public BookingByUserDTO(String propertyName, String address, LocalDate checkInDate, LocalDate checkOutDate, Double totalSpent, String status) {
+    public BookingByUserDTO(String propertyName, String address, LocalDate checkInDate, LocalDate checkOutDate, Double totalSpent, String status, Long bookingId) {
         this.propertyName = propertyName;
         this.address = address;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.totalSpent = totalSpent;
         this.status = status;
+        this.bookingId = bookingId;
     }
 }
