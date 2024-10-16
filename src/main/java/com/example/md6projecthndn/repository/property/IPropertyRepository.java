@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public interface IPropertyRepository extends JpaRepository<Property, Long> {
@@ -111,4 +112,19 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             "GROUP BY p.id",
             nativeQuery = true)
     List<Object[]> getPropertyRevenueDetails(@Param("username") String username);
+
+    @Query(value = "SELECT YEAR(b.check_out_date) AS year, " +
+            "MONTH(b.check_out_date) AS month, " +
+            "COALESCE(SUM(CASE WHEN b.booking_status_id = 3 THEN p.price_per_night * DATEDIFF(b.check_out_date, b.check_in_date) ELSE 0 END), 0) AS revenue " +
+            "FROM properties p " +
+            "LEFT JOIN bookings b ON p.id = b.property_id " +
+            "LEFT JOIN property_status s ON p.status_id = s.id " +
+            "JOIN users u ON p.owner_id = u.id " +
+            "WHERE u.username = :username " +
+            "AND b.check_out_date BETWEEN :start_date AND :end_date " +
+            "GROUP BY YEAR(b.check_out_date), MONTH(b.check_out_date)",
+            nativeQuery = true)
+    List<Object[]> getMonthlyRevenueByOwner(@Param("username") String username,
+                                            @Param("start_date") Date startDate,
+                                            @Param("end_date") Date endDate);
 }
