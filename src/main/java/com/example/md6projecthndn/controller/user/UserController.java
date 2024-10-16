@@ -1,9 +1,11 @@
 package com.example.md6projecthndn.controller.user;
 
 
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.UserProfileDTO;
 import com.example.md6projecthndn.model.dto.UserProfileMapper;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +15,21 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final IUserService userService;
     private final UserProfileMapper userProfileMapper;
+    private final IBookingService bookingService;
 
-    public UserController(IUserService userService, UserProfileMapper userProfileMapper) {
+    public UserController(IUserService userService, UserProfileMapper userProfileMapper, IBookingService bookingService) {
         this.userService = userService;
         this.userProfileMapper = userProfileMapper;
+        this.bookingService = bookingService;
     }
 
 //    @GetMapping("/")
@@ -139,6 +146,20 @@ public class UserController {
     @GetMapping("/findByUsername")
     public User findByUsername(@RequestParam String username) {
         return userService.findByUsername(username);
+    }
+
+
+    @GetMapping("/history-booking")
+    public ResponseEntity<?> getBookingHistory(@RequestParam Long userId) {
+        List<BookingByUserDTO> bookingHistoryList = bookingService.bookingByUser(userId);
+
+        if (bookingHistoryList.isEmpty()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Người dùng chưa thuê nhà.");
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.ok(bookingHistoryList);
     }
 
 }

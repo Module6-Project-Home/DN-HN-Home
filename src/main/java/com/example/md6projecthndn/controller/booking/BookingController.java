@@ -102,6 +102,24 @@ public class BookingController {
         return ResponseEntity.ok(overlappingBookings);
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelBooking(@RequestParam Long bookingId) {
+        Booking booking = bookingService.findById(bookingId);
+
+        if (booking == null) {
+            return new ResponseEntity<>("Booking not found", HttpStatus.NOT_FOUND);
+        }
+
+        BookingStatus cancelStatus = bookingStatusService.findById(4L);
+        if (cancelStatus == null) {
+            return new ResponseEntity<>("Cancel status not found", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        booking.setBookingStatus(cancelStatus);
+        bookingService.save(booking);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
 
 
 

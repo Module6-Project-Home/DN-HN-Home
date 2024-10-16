@@ -105,7 +105,8 @@ public class BookingService implements IBookingService {
                     ((java.sql.Date) result[2]).toLocalDate(),
                     ((java.sql.Date) result[3]).toLocalDate(),
                     ((Number) result[4]).doubleValue(),
-                    (String) result[5]
+                    (String) result[5],
+                    ((Number) result[6]).longValue()
             );
             bookingByUserDTOs.add(bookingByUserDTO);
         }
