@@ -1,9 +1,7 @@
 package com.example.md6projecthndn.service.property.property;
 
 
-import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
-import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
-import com.example.md6projecthndn.model.dto.ReviewDTO;
+import com.example.md6projecthndn.model.dto.*;
 import com.example.md6projecthndn.model.dto.PropertyImageDTO;
 import com.example.md6projecthndn.model.entity.property.*;
 import com.example.md6projecthndn.repository.booking.IStatusRepository;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -263,4 +262,26 @@ public class PropertyService implements IPropertyService {
     public Page<Property> findByOwnerUsername(String username, Pageable pageable) {
         return propertyRepository.findByOwnerUsername(username, pageable);
     }
+
+    @Override
+    public List<PropertyRevenueDTO> getPropertyRevenueDetails(String username) {
+        List<Object[]> results = propertyRepository.getPropertyRevenueDetails(username);
+        List<PropertyRevenueDTO> dtoList = new ArrayList<>();
+
+        for (Object[] result : results) {
+            PropertyRevenueDTO dto = new PropertyRevenueDTO();
+            dto.setId((Long) result[0]);
+            dto.setName((String) result[1]);
+            dto.setAddress((String) result[2]);
+            dto.setPricePerNight((Double) result[3]);
+            dto.setStatus((String) result[4]);
+            dto.setRevenue((Double) result[5]);
+            dto.setOwner((String) result[6]);
+
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+    }
+
 }

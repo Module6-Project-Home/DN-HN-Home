@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.property.property;
 
 
 import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
@@ -50,4 +51,5 @@ public interface IPropertyService extends IGenerateService<Property> {
     Page<Property> findByOwnerUsername(String username, Pageable pageable);
 
     Long countByOwnerId(Long ownerId);
+    public List<PropertyRevenueDTO> getPropertyRevenueDetails(String username);
 }
