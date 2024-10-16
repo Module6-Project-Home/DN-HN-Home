@@ -33,7 +33,7 @@ public class Review {
     @JoinColumn(name = "property_id")
     private Property property;
 
-    private int rating; // Scale 1 to 5
+    private int rating;
 
     @Lob
     private String comment;
