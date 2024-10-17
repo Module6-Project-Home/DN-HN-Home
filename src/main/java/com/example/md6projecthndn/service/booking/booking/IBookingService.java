@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.booking.booking;
 
 import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
+import com.example.md6projecthndn.model.dto.RentalBookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.service.IGenerateService;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,6 @@ public interface IBookingService extends IGenerateService<Booking> {
 
     List<BookingByUserDTO> bookingByUser(@Param("userId") Long userId);
 
-
-
+    List<RentalBookingDTO> findBookingByOwnerUsername(String username);
 
 }

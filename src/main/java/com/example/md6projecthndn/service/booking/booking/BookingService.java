@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.booking.booking;
 
 import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
+import com.example.md6projecthndn.model.dto.RentalBookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.BookingStatus;
 import com.example.md6projecthndn.model.entity.booking.BookingStatusEnum;
@@ -20,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,7 +111,8 @@ public class BookingService implements IBookingService {
                     ((java.sql.Date) result[2]).toLocalDate(),
                     ((java.sql.Date) result[3]).toLocalDate(),
                     ((Number) result[4]).doubleValue(),
-                    (String) result[5]
+                    (String) result[5],
+                    ((Number) result[6]).longValue()
             );
             bookingByUserDTOs.add(bookingByUserDTO);
         }
@@ -119,6 +120,21 @@ public class BookingService implements IBookingService {
         return bookingByUserDTOs;
     }
 
+    @Override
+    public List<RentalBookingDTO> findBookingByOwnerUsername(String username) {
+        List<Booking> bookings = bookingRepository.findBookingByOwnerUsername(username);
 
-
+        // Chuyển đổi từ Booking sang RentalBookingDTO
+        return bookings.stream().map(booking -> {
+            RentalBookingDTO dto = new RentalBookingDTO();
+            dto.setId(booking.getId());
+            dto.setGuest(booking.getGuest().getUsername());  // Set tên khách
+            dto.setPropertyName(booking.getProperty().getName());  // Set tên nhà
+            dto.setCheckInDate(booking.getCheckInDate());
+            dto.setCheckOutDate(booking.getCheckOutDate());
+            dto.setBookingStatus(booking.getBookingStatus().getStatus().getDescription());  // Set trạng thái đơn
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }
+

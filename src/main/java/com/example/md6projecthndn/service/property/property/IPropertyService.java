@@ -2,7 +2,9 @@ package com.example.md6projecthndn.service.property.property;
 
 
 
+import com.example.md6projecthndn.model.dto.MonthlyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyDetailDTO;
+import com.example.md6projecthndn.model.dto.PropertyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +53,9 @@ public interface IPropertyService extends IGenerateService<Property> {
     Page<Property> findByOwnerUsername(String username, Pageable pageable);
 
     Long countByOwnerId(Long ownerId);
-}
+    public List<PropertyRevenueDTO> getPropertyRevenueDetails(String username);
+
+    public List<MonthlyRevenueDTO> getMonthlyRevenue(String username, Date startDate, Date endDate);
+
+
+    }
