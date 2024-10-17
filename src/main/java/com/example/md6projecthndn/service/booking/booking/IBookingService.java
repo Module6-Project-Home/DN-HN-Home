@@ -29,4 +29,9 @@ public interface IBookingService extends IGenerateService<Booking> {
 
     List<RentalBookingDTO> findBookingByOwnerUsername(String username);
 
+
+    void checkIn(Long bookingId);
+
+    void checkOut(Long bookingId);
+
 }
