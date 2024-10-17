@@ -154,6 +154,11 @@ public class BookingController {
             return new ResponseEntity<>("Bạ chưa thuê nhà nên không để lại đánh giá", HttpStatus.BAD_REQUEST);
         }
 
+        String guest = review.getGuest().getUsername();
+        String propertyName = property.getName();
+        User owner = property.getOwner();
+        notificationService.notifyOwnerOfReview(guest, propertyName, owner);
+
         review.setProperty(property);
         review.setGuest(user);
         reviewService.save(review);
