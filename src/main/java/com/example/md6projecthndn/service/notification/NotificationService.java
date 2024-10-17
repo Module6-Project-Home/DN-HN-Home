@@ -38,4 +38,13 @@ public class NotificationService implements INotificationService {
             notificationRepository.save(notification);
         }
     }
+
+    @Override
+    public void notifyOwnerOfBooking(String guestName, String propertyName, User owner) {
+        Notification notification = new Notification();
+        notification.setOwner(owner);
+        notification.setMessage(guestName + " đã đặt thuê " + propertyName + " vào ngày " + LocalDate.now());
+        notification.setTimestamp(LocalDateTime.now());
+        notificationRepository.save(notification);
+    }
 }
