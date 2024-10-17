@@ -121,6 +121,11 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+
+    public List<Booking> findByGuestIdAndPropertyIdAndBookingStatusId(Long guestId, Long propertyId, Long bookingStatusId) {
+        return bookingRepository.findByGuestIdAndPropertyIdAndBookingStatusId(guestId,propertyId,bookingStatusId);
+    }
+
     public List<RentalBookingDTO> findBookingByOwnerUsername(String username) {
         List<Booking> bookings = bookingRepository.findBookingByOwnerUsername(username);
 
@@ -135,6 +140,7 @@ public class BookingService implements IBookingService {
             dto.setBookingStatus(booking.getBookingStatus().getStatus().getDescription());  // Set trạng thái đơn
             return dto;
         }).collect(Collectors.toList());
+
     }
 
     @Override
