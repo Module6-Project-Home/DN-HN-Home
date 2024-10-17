@@ -38,4 +38,8 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
    List<Object[]>  bookingByUser(@Param("userId") Long userId);
 
     List<Booking> findByGuestIdAndPropertyIdAndBookingStatusId(Long guestId, Long propertyId, Long bookingStatusId);
-}
+
+
+    @Query("SELECT b FROM Booking b WHERE b.property.owner.username = :username")
+    List<Booking> findBookingByOwnerUsername(String username);}
+

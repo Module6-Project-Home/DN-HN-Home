@@ -2,6 +2,7 @@ package com.example.md6projecthndn.service.booking.booking;
 
 
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
+import com.example.md6projecthndn.model.dto.RentalBookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService implements IBookingService {
@@ -115,7 +117,26 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+
     public List<Booking> findByGuestIdAndPropertyIdAndBookingStatusId(Long guestId, Long propertyId, Long bookingStatusId) {
         return bookingRepository.findByGuestIdAndPropertyIdAndBookingStatusId(guestId,propertyId,bookingStatusId);
     }
+
+    public List<RentalBookingDTO> findBookingByOwnerUsername(String username) {
+        List<Booking> bookings = bookingRepository.findBookingByOwnerUsername(username);
+
+        // Chuyển đổi từ Booking sang RentalBookingDTO
+        return bookings.stream().map(booking -> {
+            RentalBookingDTO dto = new RentalBookingDTO();
+            dto.setId(booking.getId());
+            dto.setGuest(booking.getGuest().getUsername());  // Set tên khách
+            dto.setPropertyName(booking.getProperty().getName());  // Set tên nhà
+            dto.setCheckInDate(booking.getCheckInDate());
+            dto.setCheckOutDate(booking.getCheckOutDate());
+            dto.setBookingStatus(booking.getBookingStatus().getStatus().getDescription());  // Set trạng thái đơn
+            return dto;
+        }).collect(Collectors.toList());
+
+    }
 }
+

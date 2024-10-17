@@ -287,4 +287,21 @@ public class PropertyService implements IPropertyService {
         return dtoList;
     }
 
+    @Override
+    public List<MonthlyRevenueDTO> getMonthlyRevenue(String username, Date startDate, Date endDate) {
+            List<Object[]> results = propertyRepository.getMonthlyRevenueByOwner(username, startDate, endDate);
+            List<MonthlyRevenueDTO> monthlyRevenues = new ArrayList<>();
+
+            for (Object[] result : results) {
+                int year = (int) result[0];
+                int month = (int) result[1];
+                Double revenue = (Double ) result[2];
+
+                MonthlyRevenueDTO dto = new MonthlyRevenueDTO(year, month, revenue);
+                monthlyRevenues.add(dto);
+            }
+
+            return monthlyRevenues;
+
+    }
 }
