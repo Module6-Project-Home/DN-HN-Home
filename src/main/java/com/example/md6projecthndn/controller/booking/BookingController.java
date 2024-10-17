@@ -15,6 +15,7 @@ import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.booking.bookingstatus.IBookingStatusService;
 import com.example.md6projecthndn.service.booking.review.IReviewService;
 import com.example.md6projecthndn.service.booking.status.IStatusService;
+import com.example.md6projecthndn.service.notification.INotificationService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.BeanUtils;
@@ -53,6 +54,9 @@ public class BookingController {
 
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private INotificationService notificationService;
 
     @PostMapping
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingDTO bookingDTO, BindingResult bindingResult) {
@@ -127,6 +131,10 @@ public class BookingController {
 
         booking.setBookingStatus(cancelStatus);
         bookingService.save(booking);
+        String guestName = booking.getGuest().getUsername();
+        String propertyName = booking.getProperty().getName();
+        User owner = booking.getProperty().getOwner();
+        notificationService.notifyOwnerOfCancellation(guestName, propertyName, owner);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
