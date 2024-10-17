@@ -113,4 +113,9 @@ public class BookingService implements IBookingService {
 
         return bookingByUserDTOs;
     }
+
+    @Override
+    public List<Booking> findByGuestIdAndPropertyIdAndBookingStatusId(Long guestId, Long propertyId, Long bookingStatusId) {
+        return bookingRepository.findByGuestIdAndPropertyIdAndBookingStatusId(guestId,propertyId,bookingStatusId);
+    }
 }

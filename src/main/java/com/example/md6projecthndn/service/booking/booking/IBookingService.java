@@ -24,4 +24,6 @@ public interface IBookingService extends IGenerateService<Booking> {
 
     List<BookingByUserDTO> bookingByUser(@Param("userId") Long userId);
 
+    List<Booking> findByGuestIdAndPropertyIdAndBookingStatusId(Long guestId, Long propertyId, Long bookingStatusId);
+
 }
