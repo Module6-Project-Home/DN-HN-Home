@@ -1,9 +1,12 @@
 package com.example.md6projecthndn.controller.host;
 
 
+import com.example.md6projecthndn.model.dto.BookingByHostDTO;
+import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyImage;
+import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,6 +34,9 @@ public class HostController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IBookingService bookingService;
 //
 
     @GetMapping("/listMyHomestay")
@@ -111,4 +117,9 @@ public class HostController {
         return ResponseEntity.ok(propertyCount);
 
     }
+
+
+
+
+
 }

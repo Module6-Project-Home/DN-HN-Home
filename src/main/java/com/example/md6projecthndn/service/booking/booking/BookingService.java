@@ -1,8 +1,11 @@
 package com.example.md6projecthndn.service.booking.booking;
 
 
+import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
+import com.example.md6projecthndn.model.entity.booking.BookingStatus;
+import com.example.md6projecthndn.model.entity.booking.BookingStatusEnum;
 import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.repository.booking.IBookingRepository;
@@ -12,10 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService implements IBookingService {
@@ -112,4 +118,7 @@ public class BookingService implements IBookingService {
 
         return bookingByUserDTOs;
     }
+
+
+
 }
