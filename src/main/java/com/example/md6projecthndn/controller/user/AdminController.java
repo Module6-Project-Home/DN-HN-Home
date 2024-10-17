@@ -1,11 +1,9 @@
 package com.example.md6projecthndn.controller.user;
 
 
-import com.example.md6projecthndn.model.dto.BookingByUserDTO;
-import com.example.md6projecthndn.model.dto.HostDetailDTO;
-import com.example.md6projecthndn.model.dto.ROLENAME;
-import com.example.md6projecthndn.model.dto.UserDTO;
-import com.example.md6projecthndn.model.dto.UserDetailDTO;
+import com.example.md6projecthndn.model.dto.*;
+import com.example.md6projecthndn.model.entity.property.Property;
+import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
@@ -14,6 +12,7 @@ import com.example.md6projecthndn.service.booking.booking.IBookingService;
 
 import com.example.md6projecthndn.service.email.IEmailService;
 import com.example.md6projecthndn.repository.user.IUserRepository;
+import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
 import com.example.md6projecthndn.service.user.status.IUserStatusService;
@@ -50,6 +49,9 @@ public class AdminController {
 
     @Autowired
     private IBookingService bookingService;
+
+    @Autowired
+    private IPropertyService propertyService;
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId, @RequestParam String reason) {
@@ -146,7 +148,7 @@ public class AdminController {
     }
 
     @PutMapping("/approve-upgrade")
-    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved,@RequestParam String reason) {
+    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved, @RequestParam String reason) {
         try {
             User user = userService.findById(userId); // Kiểm tra người dùng
             if (user == null) {
@@ -170,7 +172,6 @@ public class AdminController {
                     user.getRoles().add(hostRole);
                     user.setUpgradeRequested(false); // Đặt lại trạng thái yêu cầu nâng cấp
                 }
-
 
 
             } else {
@@ -215,6 +216,34 @@ public class AdminController {
         // Nếu có booking, trả về danh sách
         return ResponseEntity.ok(bookingByUserDTOList);
     }
+
+    @PutMapping("/properties-by-owner")
+    public ResponseEntity<List<PropertyDTO>> getPropertiesByOwnerId(@RequestParam Long ownerId) {
+        List<Property> properties = propertyService.findByOwnerId(ownerId);
+
+        if (properties.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        List<PropertyDTO> propertyDTOs = properties.stream().map(p -> {
+            PropertyDTO dto = new PropertyDTO();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setAddress(p.getAddress());
+            dto.setPricePerNight(p.getPricePerNight());
+            dto.setOwner(p.getOwner().getUsername());
+            dto.setBathrooms(p.getBathrooms());
+            dto.setBedrooms(p.getBedrooms());
+            dto.setStatus(p.getStatus().getName().toString());
+            dto.setDescription(p.getDescription());
+            dto.setPropertyType(p.getPropertyType().getName());
+            dto.setRoomType(p.getRoomType().getName());
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(propertyDTOs);
+    }
+
 
 }
 
