@@ -3,9 +3,11 @@ package com.example.md6projecthndn.controller.host;
 
 import com.example.md6projecthndn.model.dto.MonthlyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyRevenueDTO;
+import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyImage;
+import com.example.md6projecthndn.service.booking.review.IReviewService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,6 +35,9 @@ public class HostController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IReviewService reviewService;
 //
 
     @GetMapping("/listMyHomestay")
@@ -141,6 +144,16 @@ public class HostController {
         return ResponseEntity.ok(revenue);
     }
 
+    @PutMapping("/reviews/{id}/hide")
+    public ResponseEntity<?> hideReview(@PathVariable Long id) {
+            Review review = reviewService.findById(id);
+            if (review == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bài đánh giá không tồn tại");
+            }
+            review.setIsValid(false);
+            reviewService.save(review);
+            return ResponseEntity.ok("Review hidden successfully");
+    }
 
 
 }

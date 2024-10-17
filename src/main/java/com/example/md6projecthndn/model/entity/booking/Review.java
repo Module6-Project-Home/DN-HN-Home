@@ -38,6 +38,8 @@ public class Review {
     @Lob
     private String comment;
 
+    private Boolean isValid;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -45,6 +47,13 @@ public class Review {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (isValid == null) {
+            isValid = true;
+        }
+    }
 
     // Constructors, getters and setters
 }
