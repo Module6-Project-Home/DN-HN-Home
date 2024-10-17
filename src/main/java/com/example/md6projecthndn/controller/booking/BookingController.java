@@ -88,6 +88,10 @@ public class BookingController {
 
             Booking booking = new Booking();
             BeanUtils.copyProperties(bookingDTO, booking);
+            String guestName = bookingDTO.getGuest().getUsername();
+            String propertyName = bookingDTO.getProperty().getName();
+            User owner = bookingDTO.getProperty().getOwner();
+            notificationService.notifyOwnerOfBooking(guestName, propertyName, owner);
             bookingService.save(booking);
             return new ResponseEntity<>(booking, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
