@@ -47,4 +47,13 @@ public class NotificationService implements INotificationService {
         notification.setTimestamp(LocalDateTime.now());
         notificationRepository.save(notification);
     }
+
+    @Override
+    public void notifyOwnerOfReview(String guestName, String propertyName, User owner) {
+        Notification notification = new Notification();
+        notification.setOwner(owner);
+        notification.setMessage(guestName + " đánh giá " + propertyName + " vào thời gian " + LocalDate.now());
+        notification.setTimestamp(LocalDateTime.now());
+        notificationRepository.save(notification);
+    }
 }
