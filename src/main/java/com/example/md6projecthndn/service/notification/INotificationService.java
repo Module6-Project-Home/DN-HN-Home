@@ -13,4 +13,10 @@ public interface INotificationService {
 
     public void markNotificationAsRead(Long notificationId);
 
-}
+    public void notifyOwnerOfBooking(String guestName, String propertyName, User owner);
+
+    public void notifyOwnerOfReview(String guestName, String propertyName, User owner);
+
+
+
+    }

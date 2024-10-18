@@ -4,6 +4,11 @@ package com.example.md6projecthndn.controller.user;
 import com.example.md6projecthndn.model.dto.*;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
+import com.example.md6projecthndn.model.dto.BookingByUserDTO;
+import com.example.md6projecthndn.model.dto.HostDetailDTO;
+import com.example.md6projecthndn.model.dto.ROLENAME;
+import com.example.md6projecthndn.model.dto.UserDTO;
+import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
@@ -98,46 +103,23 @@ public class AdminController {
     }
 
 
-//    @GetMapping("/hosts")
-//    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size) {
-//        Page<Object[]> results = userRepository.getHostsWithRoleHost(PageRequest.of(page, size));
-//        Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
-//                // u.id, u.avatar, u.username, u.full_name, u.phone_number, u.address,double totalRevenue
-//                ((Number) fields[0]).longValue(),  // id
-//                (String) fields[1],                // avatar
-//                (String) fields[2],                // username
-//                (String) fields[3],                // full_name
-//                (String) fields[4],                // phone_number
-//                (String) fields[5],                // address
-//                ((Number) fields[6]).doubleValue(), // total_revenue
-//                (String) fields[7]                 // status
-//        ));
-//        return ResponseEntity.ok(hostDetailDTOs);
-//    }
-@GetMapping("/hosts")
-public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size) {
-    Page<Object[]> results = userRepository.getHosts(PageRequest.of(page, size));
-    Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
-            ((Number) fields[0]).longValue(),  // id
-            (String) fields[1],                // avatar
-            (String) fields[2],                // username
-            (String) fields[3],                // full_name
-            (String) fields[4],                // phone_number
-            (String) fields[5],                // address
-            ((Number) fields[6]).doubleValue(), // total_revenue
-            ((Number) fields[7]).intValue(),   // property_count
-            (String) fields[8]                 // status
-    ));
-    return ResponseEntity.ok(hostDetailDTOs);
-}
-
-
-
-
+    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
+    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
+        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getCurrentStatus().name(),
+                user.getId(),
+                user.getUsername(),
+                user.getAvatar(),
+                user.getAddress(),
+                user.isUpgradeRequested()
+        ));
+        return ResponseEntity.ok(UserDTOs);
+    }
 
     @PutMapping("/update-status") // cập nhạt status cho user,host
     public ResponseEntity<String> updateUserStatus(@RequestParam("userId") Long userId, @RequestParam("status") String status) {
@@ -169,7 +151,7 @@ public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
     }
 
     @PutMapping("/approve-upgrade")
-    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved, @RequestParam String reason) {
+    public ResponseEntity<?> approveUpgrade(@RequestParam Long userId, @RequestParam boolean isApproved,@RequestParam String reason) {
         try {
             User user = userService.findById(userId); // Kiểm tra người dùng
             if (user == null) {
@@ -193,6 +175,7 @@ public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
                     user.getRoles().add(hostRole);
                     user.setUpgradeRequested(false); // Đặt lại trạng thái yêu cầu nâng cấp
                 }
+
 
 
             } else {

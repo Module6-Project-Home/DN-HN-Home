@@ -167,11 +167,12 @@ public class PropertyService implements IPropertyService {
 
     @Override
     public void save(Property property) {
+        propertyRepository.save(property);
     }
 
     @Override
     public void delete(Long id) {
-
+        propertyRepository.deleteById(id);
     }
 
     @Override
@@ -230,6 +231,7 @@ public class PropertyService implements IPropertyService {
                 reviewDTO.setComment(review.getComment());
                 reviewDTO.setGuest(review.getGuest().getUsername());
                 reviewDTO.setAvatar(review.getGuest().getAvatar());
+                reviewDTO.setIsValid(review.getIsValid());
                 reviewDTO.setCreatedAt(review.getCreatedAt());
                 return reviewDTO;
             }).collect(Collectors.toList());
