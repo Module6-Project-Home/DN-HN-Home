@@ -191,7 +191,7 @@ public class BookingController {
         bookingService.save(booking);
 
         // Update property status
-        Property property = booking.getProperty();
+        Property property = propertyService.findById(booking.getProperty().getId());
         Status newStatus = statusService.findById(2L); // Assuming 2 is the ID for "Đang cho thuê"
         property.setStatus(newStatus);
         propertyService.save(property);
@@ -216,11 +216,15 @@ public class BookingController {
         bookingService.save(booking);
 
         // Update property status
-        Property property = booking.getProperty();
-        Status newStatus = statusService.findById(1L); // Assuming 1 is the ID for "Đang trống"
-        property.setStatus(newStatus);
-        propertyService.save(property);
+        Property property = propertyService.findById(booking.getProperty().getId());
+         // Assuming 1 is the ID for "Đrang tống"
 
+        List<Booking> bookingList = bookingService.findByBookingStatus(property.getId());
+        if(bookingList.size() == 0) {
+            Status newStatus = statusService.findById(3L);
+            property.setStatus(newStatus);
+            propertyService.save(property);
+        }
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 

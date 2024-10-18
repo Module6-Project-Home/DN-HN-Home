@@ -144,6 +144,11 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    public List<Booking> findByBookingStatus(Long propertyId) {
+        return bookingRepository.findByBookingStatus(propertyId);
+    }
+
+    @Override
     public void checkIn(Long bookingId) {
         Booking booking = findById(bookingId);
         if (booking == null) {
