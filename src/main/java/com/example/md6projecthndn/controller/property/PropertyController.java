@@ -7,6 +7,7 @@ import com.example.md6projecthndn.model.dto.PropertyTopBookingDTO;
 import com.example.md6projecthndn.model.entity.property.*;
 
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.service.booking.status.IStatusService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -28,6 +31,9 @@ public class PropertyController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IStatusService statusService;
 
     @PostMapping
     public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO propertyDTO) {
@@ -234,34 +240,16 @@ public class PropertyController {
 
 
     @PutMapping("/change-status/{id}")
-    public ResponseEntity<PropertyDTO> changePropertyStatus(@PathVariable Long id, @RequestParam Status.PROPERTY_STATUS newStatus) {
+    public ResponseEntity<Property> changePropertyStatus(@PathVariable Long id, @RequestParam Status.PROPERTY_STATUS newStatus) {
         Property property = propertyService.findById(id);
         if (property == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
-        Status.PROPERTY_STATUS currentStatus = property.getStatus().getName();
-        if (currentStatus == Status.PROPERTY_STATUS.VACANT || currentStatus == Status.PROPERTY_STATUS.MAINTENANCE) {
-            property.getStatus().setName(newStatus);
+          Optional<Status> statusEntity = statusService.findByName(newStatus);
+         property.setStatus(statusEntity.get());
             propertyService.save(property);
+            return ResponseEntity.ok(property);
 
-            PropertyDTO PropertyDTO = new PropertyDTO();
-            PropertyDTO.setId(property.getId());
-            PropertyDTO.setName(property.getName());
-            PropertyDTO.setAddress(property.getAddress());
-            PropertyDTO.setPricePerNight(property.getPricePerNight());
-            PropertyDTO.setOwner(property.getOwner().getUsername());
-            PropertyDTO.setBathrooms(property.getBathrooms());
-            PropertyDTO.setBedrooms(property.getBedrooms());
-            PropertyDTO.setStatus(property.getStatus().getName().toString());
-            PropertyDTO.setDescription(property.getDescription());
-            PropertyDTO.setPropertyType(property.getPropertyType().getName());
-            PropertyDTO.setRoomType(property.getRoomType().getName());
-
-            return ResponseEntity.ok(PropertyDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
     }
 
 }

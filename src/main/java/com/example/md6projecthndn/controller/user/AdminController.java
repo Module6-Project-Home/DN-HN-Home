@@ -43,9 +43,6 @@ public class AdminController {
     private IUserStatusService userStatusService;
 
     @Autowired
-    private IUserRepository userRepository;
-
-    @Autowired
     private IRoleService roleService;
 
     @Autowired
@@ -56,7 +53,7 @@ public class AdminController {
     private IBookingService bookingService;
 
     @Autowired
-    private IPropertyService propertyService;
+    private IUserRepository userRepository;
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId, @RequestParam String reason) {
@@ -103,22 +100,41 @@ public class AdminController {
     }
 
 
-    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
-    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
+//    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
+//        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+//                user.getFullName(),
+//                user.getPhoneNumber(),
+//                user.getCurrentStatus().name(),
+//                user.getId(),
+//                user.getUsername(),
+//                user.getAvatar(),
+//                user.getAddress(),
+//                user.isUpgradeRequested()
+//        ));
+//        return ResponseEntity.ok(UserDTOs);
+//    }
+
+    @GetMapping("/hosts")
+    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
-        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-                user.getFullName(),
-                user.getPhoneNumber(),
-                user.getCurrentStatus().name(),
-                user.getId(),
-                user.getUsername(),
-                user.getAvatar(),
-                user.getAddress(),
-                user.isUpgradeRequested()
+        Page<Object[]> results = userRepository.getHosts(PageRequest.of(page, size));
+        Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
+                ((Number) fields[0]).longValue(),  // id
+                (String) fields[1],                // avatar
+                (String) fields[2],                // username
+                (String) fields[3],                // full_name
+                (String) fields[4],                // phone_number
+                (String) fields[5],                // address
+                ((Number) fields[6]).doubleValue(), // total_revenue
+                ((Number) fields[7]).intValue(),   // property_count
+                (String) fields[8]                 // status
         ));
-        return ResponseEntity.ok(UserDTOs);
+        return ResponseEntity.ok(hostDetailDTOs);
     }
 
     @PutMapping("/update-status") // cập nhạt status cho user,host
@@ -220,32 +236,6 @@ public class AdminController {
         // Nếu có booking, trả về danh sách
         return ResponseEntity.ok(bookingByUserDTOList);
     }
-
-    @PutMapping("/properties-by-owner")
-    public ResponseEntity<List<PropertyByHostDTO>> getPropertiesByOwnerId(@RequestParam("ownerId") Long ownerId) {
-        List<Property> properties = propertyService.findByOwnerId(ownerId);
-
-        if (properties.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        List<PropertyByHostDTO> propertyDTOs = properties.stream().map(p -> {
-            PropertyByHostDTO dto = new PropertyByHostDTO();
-            dto.setId(p.getId());
-            dto.setName(p.getName());
-            dto.setAddress(p.getAddress());
-            dto.setPricePerNight(p.getPricePerNight());
-            dto.setBathrooms(p.getBathrooms());
-            dto.setBedrooms(p.getBedrooms());
-            dto.setStatus(p.getStatus().getName().toString());
-            dto.setPropertyType(p.getPropertyType().getName());
-            dto.setRoomType(p.getRoomType().getName());
-            return dto;
-        }).toList();
-
-        return ResponseEntity.ok(propertyDTOs);
-    }
-
 
 }
 
