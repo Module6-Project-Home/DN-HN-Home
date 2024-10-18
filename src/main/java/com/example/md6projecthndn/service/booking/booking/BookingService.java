@@ -1,9 +1,12 @@
 package com.example.md6projecthndn.service.booking.booking;
 
 
+import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.RentalBookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
+import com.example.md6projecthndn.model.entity.booking.BookingStatus;
+import com.example.md6projecthndn.model.entity.booking.BookingStatusEnum;
 import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.repository.booking.IBookingRepository;
@@ -12,6 +15,7 @@ import com.example.md6projecthndn.service.property.property.IPropertyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -137,6 +141,61 @@ public class BookingService implements IBookingService {
             return dto;
         }).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<Booking> findByBookingStatus(Long propertyId) {
+        return bookingRepository.findByBookingStatus(propertyId);
+    }
+
+    @Override
+    public void checkIn(Long bookingId) {
+        Booking booking = findById(bookingId);
+        if (booking == null) {
+            throw new RuntimeException("Booking not found");
+        }
+
+        // Kiểm tra nếu trạng thái hiện tại là 'Pending'
+        if (booking.getBookingStatus().getStatus() == BookingStatusEnum.PENDING) {
+            // Cập nhật trạng thái booking thành 'Check-in'
+            booking.setBookingStatus(new BookingStatus(BookingStatusEnum.CHECKIN, BookingStatusEnum.CHECKIN.getDescription()));
+            save(booking);
+
+            // Cập nhật trạng thái nhà thành 'Đang cho thuê'
+            Property property = booking.getProperty();
+            Status rentingStatus = statusService.findById(2L); // 'Đang cho thuê' status
+            if (rentingStatus != null) {
+                property.setStatus(rentingStatus);
+                propertyService.save(property);
+            }
+        } else {
+            throw new RuntimeException("Booking is not in pending state");
+        }
+    }
+
+    @Override
+    public void checkOut(Long bookingId) {
+        Booking booking = findById(bookingId);
+        if (booking == null) {
+            throw new RuntimeException("Booking not found");
+        }
+
+        // Kiểm tra nếu trạng thái hiện tại là 'Đang ở (Check-in)'
+        if (booking.getBookingStatus().getStatus() == BookingStatusEnum.CHECKIN) {
+            // Cập nhật trạng thái booking thành 'Đã trả phòng (Check-out)'
+            booking.setBookingStatus(new BookingStatus(BookingStatusEnum.CHECKOUT, BookingStatusEnum.CHECKOUT.getDescription()));
+            save(booking);
+
+            // Cập nhật trạng thái nhà thành 'Đang trống (Available)'
+            Property property = booking.getProperty();
+            Status availableStatus = statusService.findById(1L); // 'Đang trống' status
+            if (availableStatus != null) {
+                property.setStatus(availableStatus);
+                propertyService.save(property);
+            }
+        } else {
+            throw new RuntimeException("Booking is not in check-in state");
+        }
     }
 }
 
