@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.model.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PropertyByHostDTO {
     private Long id;
     private String name;
@@ -17,7 +19,7 @@ public class PropertyByHostDTO {
     private Integer bedrooms;
     private Integer bathrooms;
     private Double pricePerNight;
-    private String propertyStatus;
+    private String status;
 
 
 }

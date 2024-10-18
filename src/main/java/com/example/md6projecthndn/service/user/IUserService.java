@@ -39,6 +39,4 @@ public interface IUserService extends IGenerateService<User> {
 
     UserDetailDTO getUserDetails(Long id);
 
-    List<PropertyByHostDTO> getPropertiesByHostId(Long userId);
-
 }

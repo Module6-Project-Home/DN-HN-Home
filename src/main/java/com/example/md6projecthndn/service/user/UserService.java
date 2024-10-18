@@ -196,23 +196,6 @@ public class UserService implements IUserService, UserDetailsService {
         return userDetailDTO;
     }
 
-    @Override
-    public List<PropertyByHostDTO> getPropertiesByHostId(Long userId) {
-        List<Property> properties = userRepository.findPropertiesByHostId(userId);
-        return properties.stream().map(p -> {
-            PropertyByHostDTO dto = new PropertyByHostDTO();
-            dto.setId(p.getId());
-            dto.setName(p.getName());
-            dto.setPropertyType(p.getPropertyType().getName());
-            dto.setRoomType(p.getRoomType().getName());
-            dto.setAddress(p.getAddress());
-            dto.setBedrooms(p.getBedrooms());
-            dto.setBathrooms(p.getBathrooms());
-            dto.setPricePerNight(p.getPricePerNight());
-            dto.setPropertyStatus(p.getStatus().getName().toString());
-            return dto;
-        }).toList();
-    }
 
 
 }

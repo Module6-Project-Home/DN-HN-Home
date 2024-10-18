@@ -167,7 +167,6 @@ public class PropertyService implements IPropertyService {
 
     @Override
     public void save(Property property) {
-
     }
 
     @Override

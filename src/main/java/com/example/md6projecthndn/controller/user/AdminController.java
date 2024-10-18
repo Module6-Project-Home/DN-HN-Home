@@ -98,24 +98,45 @@ public class AdminController {
     }
 
 
-    @GetMapping("/hosts")
-    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        Page<Object[]> results = userRepository.getHostsWithRoleHost(PageRequest.of(page, size));
-        Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
-                // u.id, u.avatar, u.username, u.full_name, u.phone_number, u.address,double totalRevenue
-                ((Number) fields[0]).longValue(),  // id
-                (String) fields[1],                // avatar
-                (String) fields[2],                // username
-                (String) fields[3],                // full_name
-                (String) fields[4],                // phone_number
-                (String) fields[5],                // address
-                ((Number) fields[6]).doubleValue(), // total_revenue
-                (String) fields[7]                 // status
-        ));
-        return ResponseEntity.ok(hostDetailDTOs);
-    }
+//    @GetMapping("/hosts")
+//    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        Page<Object[]> results = userRepository.getHostsWithRoleHost(PageRequest.of(page, size));
+//        Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
+//                // u.id, u.avatar, u.username, u.full_name, u.phone_number, u.address,double totalRevenue
+//                ((Number) fields[0]).longValue(),  // id
+//                (String) fields[1],                // avatar
+//                (String) fields[2],                // username
+//                (String) fields[3],                // full_name
+//                (String) fields[4],                // phone_number
+//                (String) fields[5],                // address
+//                ((Number) fields[6]).doubleValue(), // total_revenue
+//                (String) fields[7]                 // status
+//        ));
+//        return ResponseEntity.ok(hostDetailDTOs);
+//    }
+@GetMapping("/hosts")
+public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
+    Page<Object[]> results = userRepository.getHosts(PageRequest.of(page, size));
+    Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
+            ((Number) fields[0]).longValue(),  // id
+            (String) fields[1],                // avatar
+            (String) fields[2],                // username
+            (String) fields[3],                // full_name
+            (String) fields[4],                // phone_number
+            (String) fields[5],                // address
+            ((Number) fields[6]).doubleValue(), // total_revenue
+            ((Number) fields[7]).intValue(),   // property_count
+            (String) fields[8]                 // status
+    ));
+    return ResponseEntity.ok(hostDetailDTOs);
+}
+
+
+
 
 
     @PutMapping("/update-status") // cập nhạt status cho user,host
@@ -218,24 +239,22 @@ public class AdminController {
     }
 
     @PutMapping("/properties-by-owner")
-    public ResponseEntity<List<PropertyDTO>> getPropertiesByOwnerId(@RequestParam Long ownerId) {
+    public ResponseEntity<List<PropertyByHostDTO>> getPropertiesByOwnerId(@RequestParam("ownerId") Long ownerId) {
         List<Property> properties = propertyService.findByOwnerId(ownerId);
 
         if (properties.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        List<PropertyDTO> propertyDTOs = properties.stream().map(p -> {
-            PropertyDTO dto = new PropertyDTO();
+        List<PropertyByHostDTO> propertyDTOs = properties.stream().map(p -> {
+            PropertyByHostDTO dto = new PropertyByHostDTO();
             dto.setId(p.getId());
             dto.setName(p.getName());
             dto.setAddress(p.getAddress());
             dto.setPricePerNight(p.getPricePerNight());
-            dto.setOwner(p.getOwner().getUsername());
             dto.setBathrooms(p.getBathrooms());
             dto.setBedrooms(p.getBedrooms());
             dto.setStatus(p.getStatus().getName().toString());
-            dto.setDescription(p.getDescription());
             dto.setPropertyType(p.getPropertyType().getName());
             dto.setRoomType(p.getRoomType().getName());
             return dto;
