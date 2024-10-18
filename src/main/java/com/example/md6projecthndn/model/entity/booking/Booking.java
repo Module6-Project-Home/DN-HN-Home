@@ -56,4 +56,6 @@ public class Booking {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+
 }

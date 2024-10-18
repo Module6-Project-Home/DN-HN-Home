@@ -2,6 +2,7 @@ package com.example.md6projecthndn.controller.user;
 
 
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
+import com.example.md6projecthndn.model.dto.HostDetailDTO;
 import com.example.md6projecthndn.model.dto.ROLENAME;
 import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.dto.UserDetailDTO;

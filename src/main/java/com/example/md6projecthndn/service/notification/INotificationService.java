@@ -15,6 +15,7 @@ public interface INotificationService {
 
     public void notifyOwnerOfBooking(String guestName, String propertyName, User owner);
 
+    public void notifyOwnerOfReview(String guestName, String propertyName, User owner);
 
 
 

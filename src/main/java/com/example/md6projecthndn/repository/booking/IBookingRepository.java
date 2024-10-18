@@ -2,6 +2,7 @@ package com.example.md6projecthndn.repository.booking;
 
 
 
+import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
 import com.example.md6projecthndn.model.entity.booking.BookingStatus;
@@ -42,5 +43,12 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
 
 
     @Query("SELECT b FROM Booking b WHERE b.property.owner.username = :username")
-    List<Booking> findBookingByOwnerUsername(String username);}
+    List<Booking> findBookingByOwnerUsername(String username);
+
+
+@Query(nativeQuery = true,value = "select * from bookings b where b.property_id = :propertyId AND (b.booking_status_id = 1 or b.booking_status_id = 2)")
+    List<Booking> findByBookingStatus(@Param("propertyId") Long propertyId);
+}
+
+
 

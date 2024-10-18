@@ -154,6 +154,11 @@ public class BookingController {
             return new ResponseEntity<>("Bạ chưa thuê nhà nên không để lại đánh giá", HttpStatus.BAD_REQUEST);
         }
 
+        String guest = review.getGuest().getUsername();
+        String propertyName = property.getName();
+        User owner = property.getOwner();
+        notificationService.notifyOwnerOfReview(guest, propertyName, owner);
+
         review.setProperty(property);
         review.setGuest(user);
         reviewService.save(review);
@@ -178,6 +183,58 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    @PostMapping("/checkin/{bookingId}")
+    public ResponseEntity<?> checkIn(@PathVariable Long bookingId) {
+        Booking booking = bookingService.findById(bookingId);
 
+        if (booking == null) {
+            return new ResponseEntity<>("Booking not found", HttpStatus.NOT_FOUND);
+        }
+
+        BookingStatus checkInStatus = bookingStatusService.findById(2L); // Assuming 2 is the ID for "Đang ở"
+        if (checkInStatus == null) {
+            return new ResponseEntity<>("Check-in status not found", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        booking.setBookingStatus(checkInStatus);
+        bookingService.save(booking);
+
+        // Update property status
+        Property property = propertyService.findById(booking.getProperty().getId());
+        Status newStatus = statusService.findById(2L); // Assuming 2 is the ID for "Đang cho thuê"
+        property.setStatus(newStatus);
+        propertyService.save(property);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
+
+    @PostMapping("/checkout/{bookingId}")
+    public ResponseEntity<?> checkOut(@PathVariable Long bookingId) {
+        Booking booking = bookingService.findById(bookingId);
+
+        if (booking == null) {
+            return new ResponseEntity<>("Booking not found", HttpStatus.NOT_FOUND);
+        }
+
+        BookingStatus checkOutStatus = bookingStatusService.findById(3L); // Assuming 3 is the ID for "Đã trả phòng"
+        if (checkOutStatus == null) {
+            return new ResponseEntity<>("Check-out status not found", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        booking.setBookingStatus(checkOutStatus);
+        bookingService.save(booking);
+
+        // Update property status
+        Property property = propertyService.findById(booking.getProperty().getId());
+        // Assuming 1 is the ID for "Đrang tống"
+
+        List<Booking> bookingList = bookingService.findByBookingStatus(property.getId());
+        if(bookingList.size() == 0) {
+            Status newStatus = statusService.findById(3L);
+            property.setStatus(newStatus);
+            propertyService.save(property);
+        }
+        return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
 
 }
