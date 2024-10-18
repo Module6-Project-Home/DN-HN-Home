@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.service.booking.review;
 
 
+import com.example.md6projecthndn.model.dto.review.TotalReviewDTO;
 import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.repository.booking.IReviewRepository;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,20 @@ public class ReviewService implements IReviewService {
     @Override
     public Iterable<Review> findReviewByPropertyId(Long propertyId) {
         return reviewRepository.findReviewByPropertyId(propertyId);
+    }
+
+    @Override
+    public TotalReviewDTO getTotalReviewsByPropertyId(Long propertyId) {
+
+       Object object = reviewRepository.getTotalReviewsByPropertyId(propertyId);
+        if(object != null){
+       Object[] fields = (Object[]) object;
+       TotalReviewDTO dto = new TotalReviewDTO(
+               ((Number) fields[0]).intValue(),
+               ((Number) fields[1]).doubleValue()
+       );
+       return dto;
+    }
+        return null;
     }
 }

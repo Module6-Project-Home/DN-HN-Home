@@ -3,6 +3,7 @@ package com.example.md6projecthndn.service.property.property;
 
 import com.example.md6projecthndn.model.dto.*;
 import com.example.md6projecthndn.model.dto.PropertyImageDTO;
+import com.example.md6projecthndn.model.dto.review.ReviewDTO;
 import com.example.md6projecthndn.model.entity.property.*;
 import com.example.md6projecthndn.repository.booking.IStatusRepository;
 import com.example.md6projecthndn.repository.property.IPropertyImageRepository;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -214,6 +214,7 @@ public class PropertyService implements IPropertyService {
             propertyDTO.setBedrooms(property.getBedrooms());
             propertyDTO.setDescription(property.getDescription());
             propertyDTO.setPricePerNight(property.getPricePerNight());
+            propertyDTO.setOwnerId(property.getOwner().getId());
 
             Set<PropertyImageDTO> imageDTOs = property.getImages().stream().map(image -> {
                 PropertyImageDTO imageDTO = new PropertyImageDTO();
@@ -229,6 +230,9 @@ public class PropertyService implements IPropertyService {
                 reviewDTO.setRating(review.getRating());
                 reviewDTO.setComment(review.getComment());
                 reviewDTO.setGuest(review.getGuest().getUsername());
+                reviewDTO.setAvatar(review.getGuest().getAvatar());
+                reviewDTO.setIsValid(review.getIsValid());
+                reviewDTO.setCreatedAt(review.getCreatedAt());
                 return reviewDTO;
             }).collect(Collectors.toList());
             propertyDTO.setReviews(reviews);
