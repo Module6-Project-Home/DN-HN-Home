@@ -217,7 +217,7 @@ public class BookingController {
 
         // Update property status
         Property property = propertyService.findById(booking.getProperty().getId());
-         // Assuming 1 is the ID for "Đrang tống"
+        // Assuming 1 is the ID for "Đrang tống"
 
         List<Booking> bookingList = bookingService.findByBookingStatus(property.getId());
         if(bookingList.size() == 0) {
