@@ -4,6 +4,7 @@ package com.example.md6projecthndn.controller.host;
 import com.example.md6projecthndn.model.dto.MonthlyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyRevenueDTO;
 import com.example.md6projecthndn.model.entity.booking.Review;
+import com.example.md6projecthndn.model.dto.PropertyByHostDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyImage;

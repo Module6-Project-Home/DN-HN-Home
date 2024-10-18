@@ -1,6 +1,9 @@
 package com.example.md6projecthndn.controller.user;
 
 
+import com.example.md6projecthndn.model.dto.*;
+import com.example.md6projecthndn.model.entity.property.Property;
+import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.HostDetailDTO;
 import com.example.md6projecthndn.model.dto.ROLENAME;
@@ -13,6 +16,8 @@ import com.example.md6projecthndn.model.entity.user.UserStatus;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
 
 import com.example.md6projecthndn.service.email.IEmailService;
+import com.example.md6projecthndn.repository.user.IUserRepository;
+import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.role.IRoleService;
 import com.example.md6projecthndn.service.user.IUserService;
 import com.example.md6projecthndn.service.user.status.IUserStatusService;
@@ -46,6 +51,9 @@ public class AdminController {
 
     @Autowired
     private IBookingService bookingService;
+
+    @Autowired
+    private IUserRepository userRepository;
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId, @RequestParam String reason) {
@@ -92,22 +100,41 @@ public class AdminController {
     }
 
 
-    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
-    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
+//    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "5") int size) {
+//        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
+//        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
+//                user.getFullName(),
+//                user.getPhoneNumber(),
+//                user.getCurrentStatus().name(),
+//                user.getId(),
+//                user.getUsername(),
+//                user.getAvatar(),
+//                user.getAddress(),
+//                user.isUpgradeRequested()
+//        ));
+//        return ResponseEntity.ok(UserDTOs);
+//    }
+
+    @GetMapping("/hosts")
+    public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
-        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-                user.getFullName(),
-                user.getPhoneNumber(),
-                user.getCurrentStatus().name(),
-                user.getId(),
-                user.getUsername(),
-                user.getAvatar(),
-                user.getAddress(),
-                user.isUpgradeRequested()
+        Page<Object[]> results = userRepository.getHosts(PageRequest.of(page, size));
+        Page<HostDetailDTO> hostDetailDTOs = results.map(fields -> new HostDetailDTO(
+                ((Number) fields[0]).longValue(),  // id
+                (String) fields[1],                // avatar
+                (String) fields[2],                // username
+                (String) fields[3],                // full_name
+                (String) fields[4],                // phone_number
+                (String) fields[5],                // address
+                ((Number) fields[6]).doubleValue(), // total_revenue
+                ((Number) fields[7]).intValue(),   // property_count
+                (String) fields[8]                 // status
         ));
-        return ResponseEntity.ok(UserDTOs);
+        return ResponseEntity.ok(hostDetailDTOs);
     }
 
     @PutMapping("/update-status") // cập nhạt status cho user,host

@@ -6,6 +6,7 @@ import com.example.md6projecthndn.model.dto.UserDTO;
 import com.example.md6projecthndn.model.dto.UserDetailDTO;
 import com.example.md6projecthndn.model.dto.UserPrinciple;
 import com.example.md6projecthndn.model.dto.*;
+import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.Role;
 import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.model.entity.user.UserStatus;
@@ -199,4 +200,7 @@ public class UserService implements IUserService, UserDetailsService {
 
         return userDetailDTO;
     }
+
+
+
 }
