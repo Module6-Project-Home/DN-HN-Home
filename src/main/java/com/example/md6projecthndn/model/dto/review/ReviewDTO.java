@@ -15,5 +15,6 @@ public class ReviewDTO {
     private String comment;
     private String guest;
     private String avatar;
+    private Boolean isValid;
     private LocalDateTime createdAt;
 }

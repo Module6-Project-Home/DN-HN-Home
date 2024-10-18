@@ -39,7 +39,6 @@ public class BookingDTO implements Validator {
     public void validate(Object target, Errors errors) {
         BookingDTO bookingDTO = (BookingDTO) target;
 
-        // Kiểm tra booking chồng chéo
         if (bookingDTO.getProperty() != null && bookingDTO.getCheckInDate() != null && bookingDTO.getCheckOutDate() != null) {
             if (!this.overlappingBookings.isEmpty()) {
                 errors.rejectValue("property", "property.booking.overlap", "Nhà này đã được đặt trong thời gian bạn chọn, Vui lòng chọn lại!");
