@@ -21,7 +21,7 @@ public interface IBookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findAll(Pageable pageable);
     List<Booking> findByCheckOutDateBefore(LocalDate date);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM bookings b WHERE b.property_id = :propertyId AND (b.check_in_date < :endDate AND b.check_out_date > :startDate) AND b.booking_status_id != 4")
+    @Query(nativeQuery = true, value = "SELECT * FROM bookings b WHERE b.property_id = :propertyId AND (b.check_in_date < :endDate AND b.check_out_date > :startDate) AND b.booking_status_id != 4 ")
     List<Booking> findOverlappingBookings(@Param("propertyId") Long propertyId,
                                           @Param("startDate") LocalDate startDate,
                                           @Param("endDate") LocalDate endDate);

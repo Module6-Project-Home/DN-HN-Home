@@ -93,6 +93,11 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public Page<User> findAllByUser(PageRequest of) {
+        return userRepository.findAllByUser(of);
+    }
+
+    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
