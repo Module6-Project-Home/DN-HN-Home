@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Dialog {
+public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +30,7 @@ public class Dialog {
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;  // Tài sản đang được thảo luận
 
-    @OneToMany(mappedBy = "dialog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ChatMessage> messages = new HashSet<>();  // Danh sách tin nhắn trong cuộc trò chuyện
 
     @CreationTimestamp

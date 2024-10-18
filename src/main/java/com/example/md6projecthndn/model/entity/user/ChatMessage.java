@@ -15,8 +15,8 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "dialog_id", nullable = false)
-    private Dialog dialog;  // Cuộc trò chuyện mà tin nhắn thuộc về
+    @JoinColumn(name = "chat_room_id", nullable = false)
+    private ChatRoom chatRoom;  // Cuộc trò chuyện mà tin nhắn thuộc về
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
