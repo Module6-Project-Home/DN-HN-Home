@@ -172,7 +172,7 @@ public class PropertyService implements IPropertyService {
 
     @Override
     public void delete(Long id) {
-
+        propertyRepository.deleteById(id);
     }
 
     @Override
