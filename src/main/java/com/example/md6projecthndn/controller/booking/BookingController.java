@@ -11,6 +11,8 @@ import com.example.md6projecthndn.model.entity.booking.Review;
 import com.example.md6projecthndn.model.entity.property.Status;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.user.User;
+import com.example.md6projecthndn.repository.booking.IStatusRepository;
+import com.example.md6projecthndn.repository.property.IPropertyRepository;
 import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.booking.bookingstatus.IBookingStatusService;
 import com.example.md6projecthndn.service.booking.review.IReviewService;
@@ -57,6 +59,9 @@ public class BookingController {
 
     @Autowired
     private INotificationService notificationService;
+
+    @Autowired
+    private IStatusRepository statusRepository;
 
     @PostMapping
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingDTO bookingDTO, BindingResult bindingResult) {
@@ -202,7 +207,6 @@ public class BookingController {
         // Update property status
         Property property = propertyService.findById(booking.getProperty().getId());
         Status newStatus = statusService.findById(2L); // Assuming 2 is the ID for "Đang cho thuê"
-        property.setStatus(newStatus);
         propertyService.save(property);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
