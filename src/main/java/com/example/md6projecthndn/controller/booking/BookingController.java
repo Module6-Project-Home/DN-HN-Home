@@ -88,6 +88,10 @@ public class BookingController {
 
             Booking booking = new Booking();
             BeanUtils.copyProperties(bookingDTO, booking);
+            String guestName = bookingDTO.getGuest().getUsername();
+            String propertyName = bookingDTO.getProperty().getName();
+            User owner = bookingDTO.getProperty().getOwner();
+            notificationService.notifyOwnerOfBooking(guestName, propertyName, owner);
             bookingService.save(booking);
             return new ResponseEntity<>(booking, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -149,6 +153,11 @@ public class BookingController {
         if(bookings == null || bookings.isEmpty()) {
             return new ResponseEntity<>("Bạ chưa thuê nhà nên không để lại đánh giá", HttpStatus.BAD_REQUEST);
         }
+
+        String guest = review.getGuest().getUsername();
+        String propertyName = property.getName();
+        User owner = property.getOwner();
+        notificationService.notifyOwnerOfReview(guest, propertyName, owner);
 
         review.setProperty(property);
         review.setGuest(user);
