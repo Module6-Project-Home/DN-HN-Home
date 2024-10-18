@@ -30,6 +30,7 @@ public interface IUserService extends IGenerateService<User> {
 
     List<User> findUsersRequestingUpgrade();
     Page<User> getUsersByRole_Name(ROLENAME rolename, PageRequest of);
+    Page<User> findAllByUser(PageRequest of);
 
     void updateUser(User currentUser, UserProfileDTO userProfileDTO);
 

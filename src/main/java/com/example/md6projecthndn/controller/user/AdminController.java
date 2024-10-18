@@ -84,7 +84,7 @@ public class AdminController {
     public ResponseEntity<Page<UserDTO>> getUsersWithRoleUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_USER, PageRequest.of(page, size));
+        Page<User> users = userService.findAllByUser(PageRequest.of(page, size));
         //String fullName, String phoneNumber, String status, Long userId, String userName
         Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
                 user.getFullName(),

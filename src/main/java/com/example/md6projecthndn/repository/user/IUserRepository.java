@@ -29,8 +29,10 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
-
     Page<User> findAllByRoles_Name(ROLENAME rolename, PageRequest of);
+
+    @Query(nativeQuery = true, value = "select * from users u join users_roles ur on u.id = ur.user_id where (ur.roles_id = 2 or ur.roles_id = 3)")
+    Page<User> findAllByUser(PageRequest of);
 
     boolean existsByUsername(String username);
 
