@@ -167,7 +167,7 @@ public class PropertyService implements IPropertyService {
 
     @Override
     public void save(Property property) {
-
+        propertyRepository.save(property);
     }
 
     @Override
