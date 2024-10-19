@@ -45,6 +45,8 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     PropertyDetailDTO findPropertyById(@Param("id") Long id);
 
+
+
     List<PropertyTopBookingDTO> findPropertyTopBookingDTO();
 
     List<Property> findByOwnerUsername(String username);

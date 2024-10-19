@@ -4,10 +4,12 @@ package com.example.md6projecthndn.controller.host;
 import com.example.md6projecthndn.model.dto.MonthlyRevenueDTO;
 import com.example.md6projecthndn.model.dto.PropertyRevenueDTO;
 import com.example.md6projecthndn.model.entity.booking.Review;
+import com.example.md6projecthndn.model.dto.PropertyByHostDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyImage;
 import com.example.md6projecthndn.service.booking.review.IReviewService;
+import com.example.md6projecthndn.service.booking.booking.IBookingService;
 import com.example.md6projecthndn.service.property.property.IPropertyService;
 import com.example.md6projecthndn.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,6 +41,9 @@ public class HostController {
 
     @Autowired
     private IReviewService reviewService;
+
+    @Autowired
+    private IBookingService bookingService;
 //
 
     @GetMapping("/listMyHomestay")

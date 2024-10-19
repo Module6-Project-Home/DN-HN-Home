@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface IStatusRepository extends JpaRepository<Status, Long> {
     Optional<Status> findByName(Status.PROPERTY_STATUS name); // Tìm Status theo enum PROPERTY_STATUS
+
 }

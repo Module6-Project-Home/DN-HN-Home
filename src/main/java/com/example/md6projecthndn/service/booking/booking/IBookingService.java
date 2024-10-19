@@ -1,6 +1,7 @@
 package com.example.md6projecthndn.service.booking.booking;
 
 
+import com.example.md6projecthndn.model.dto.BookingByHostDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
 import com.example.md6projecthndn.model.dto.RentalBookingDTO;
 import com.example.md6projecthndn.model.entity.booking.Booking;
@@ -11,9 +12,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface IBookingService extends IGenerateService<Booking> {
-    public void updatePropertyStatusIfCheckOutDatePassed();
+    void updatePropertyStatusIfCheckOutDatePassed();
 
     List<Booking> findOverlappingBookings(Long propertyId, LocalDate startDate, LocalDate endDate);
 
@@ -29,5 +31,11 @@ public interface IBookingService extends IGenerateService<Booking> {
 
     List<RentalBookingDTO> findBookingByOwnerUsername(String username);
 
+    List<Booking> findByBookingStatus(@Param("propertyId") Long propertyId);
+
+
+    void checkIn(Long bookingId);
+
+    void checkOut(Long bookingId);
 
 }

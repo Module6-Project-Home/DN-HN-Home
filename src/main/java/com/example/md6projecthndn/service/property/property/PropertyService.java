@@ -168,12 +168,12 @@ public class PropertyService implements IPropertyService {
 
     @Override
     public void save(Property property) {
-
+        propertyRepository.save(property);
     }
 
     @Override
     public void delete(Long id) {
-
+        propertyRepository.deleteById(id);
     }
 
     @Override

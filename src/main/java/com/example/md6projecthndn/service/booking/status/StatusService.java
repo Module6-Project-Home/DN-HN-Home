@@ -6,6 +6,8 @@ import com.example.md6projecthndn.repository.booking.IStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class StatusService implements IStatusService {
     @Autowired
@@ -30,5 +32,8 @@ public class StatusService implements IStatusService {
     }
 
 
-
+    @Override
+    public Optional<Status> findByName(Status.PROPERTY_STATUS newStatus) {
+        return statusRepository.findByName(newStatus);
+    }
 }
