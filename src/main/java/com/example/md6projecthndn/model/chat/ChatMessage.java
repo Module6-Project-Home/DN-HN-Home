@@ -1,5 +1,6 @@
-package com.example.md6projecthndn.model.entity.user;
+package com.example.md6projecthndn.model.chat;
 
+import com.example.md6projecthndn.model.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
