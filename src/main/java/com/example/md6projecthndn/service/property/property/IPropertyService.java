@@ -59,6 +59,4 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     public List<MonthlyRevenueDTO> getMonthlyRevenue(String username, Date startDate, Date endDate);
 
-
-    List<Property> findPropertiesByHostId(Long hostId);
 }
