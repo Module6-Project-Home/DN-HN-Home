@@ -2,6 +2,7 @@ package com.example.md6projecthndn.controller.user;
 
 
 import com.example.md6projecthndn.model.dto.*;
+import com.example.md6projecthndn.model.entity.property.HostPropertyDTO;
 import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.dto.BookingByUserDTO;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -54,6 +56,9 @@ public class AdminController {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IPropertyService propertyService;
 
     @PutMapping("/deny-upgrade")
     public ResponseEntity<String> denyUpgrade(@RequestParam Long userId, @RequestParam String reason) {
@@ -99,24 +104,6 @@ public class AdminController {
         return ResponseEntity.ok(UserDTOs);
     }
 
-
-//    @GetMapping("/hosts")// lấy danh sách chủ nhà theo role + phân trang 5 user 1 page
-//    public ResponseEntity<Page<UserDTO>> getHostsWithRoleHost(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size) {
-//        Page<User> users = userService.getUsersByRole_Name(ROLENAME.ROLE_HOST, PageRequest.of(page, size));
-//        Page<UserDTO> UserDTOs = users.map(user -> new UserDTO(
-//                user.getFullName(),
-//                user.getPhoneNumber(),
-//                user.getCurrentStatus().name(),
-//                user.getId(),
-//                user.getUsername(),
-//                user.getAvatar(),
-//                user.getAddress(),
-//                user.isUpgradeRequested()
-//        ));
-//        return ResponseEntity.ok(UserDTOs);
-//    }
 
     @GetMapping("/hosts")
     public ResponseEntity<Page<HostDetailDTO>> getHostsWithRoleHost(
@@ -235,6 +222,36 @@ public class AdminController {
 
         // Nếu có booking, trả về danh sách
         return ResponseEntity.ok(bookingByUserDTOList);
+    }
+
+    @GetMapping("/host-properties")
+    public ResponseEntity<?> getPropertiesByHost(@RequestParam Long hostId) {
+        try {
+            List<Property> properties = propertyService.findByOwnerId(hostId);
+
+            if (properties.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy property nào cho chủ nhà này.");
+            }
+
+            List<HostPropertyDTO> propertyDTOs = properties.stream()
+                    .map(property -> new HostPropertyDTO(
+                            property.getId(),
+                            property.getName(),
+                            property.getPropertyType().getName(),
+                            property.getRoomType().getName(),
+                            property.getAddress(),
+                            property.getBedrooms(),
+                            property.getBathrooms(),
+                            property.getDescription(),
+                            property.getPricePerNight(),
+                            property.getOwner().getFullName(),
+                            property.getStatus().getName().name().toUpperCase()
+                    ))
+                    .toList();
+            return ResponseEntity.ok(propertyDTOs);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }

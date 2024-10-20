@@ -305,4 +305,9 @@ public class PropertyService implements IPropertyService {
             return monthlyRevenues;
 
     }
+
+    @Override
+    public List<Property> findPropertiesByHostId(Long hostId) {
+        return propertyRepository.findByOwnerId(hostId);
+    }
 }
