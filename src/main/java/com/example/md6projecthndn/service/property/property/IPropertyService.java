@@ -10,6 +10,7 @@ import com.example.md6projecthndn.model.entity.property.Property;
 import com.example.md6projecthndn.model.entity.property.PropertyDTO;
 import com.example.md6projecthndn.model.entity.property.PropertyType;
 import com.example.md6projecthndn.model.entity.property.RoomType;
+import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.service.IGenerateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,4 +60,5 @@ public interface IPropertyService extends IGenerateService<Property> {
 
     public List<MonthlyRevenueDTO> getMonthlyRevenue(String username, Date startDate, Date endDate);
 
+    List<Property> findByOwner(User host);
 }

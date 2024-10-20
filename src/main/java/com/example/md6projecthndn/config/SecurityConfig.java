@@ -74,6 +74,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/login", "/api/properties","/api/properties/**", "/api/property-types", "/api/room-types","/**","/api/bookings","/auth/v1/SSO/google","/auth/**", "/auth/google/callback", "/api/users/register","/oauth2/**").permitAll()
 
                                 .requestMatchers("/api/users/request-upgrade").hasAnyRole("USER", "ADMIN") // Thêm quyền cho user
+                                .requestMatchers("/api/chat/**").authenticated()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/user/**").hasRole("USER")
                                 .requestMatchers("/api/host/**").hasRole("HOST")
