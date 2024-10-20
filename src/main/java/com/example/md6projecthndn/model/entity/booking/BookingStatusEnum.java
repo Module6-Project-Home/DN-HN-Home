@@ -1,5 +1,8 @@
 package com.example.md6projecthndn.model.entity.booking;
 
+import lombok.Getter;
+
+@Getter
 public enum BookingStatusEnum {
     PENDING("Chờ nhận phòng"),
     CHECKIN("Đang ở"),
@@ -12,7 +15,4 @@ public enum BookingStatusEnum {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

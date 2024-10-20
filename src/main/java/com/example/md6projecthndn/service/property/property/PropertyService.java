@@ -5,6 +5,7 @@ import com.example.md6projecthndn.model.dto.*;
 import com.example.md6projecthndn.model.dto.PropertyImageDTO;
 import com.example.md6projecthndn.model.dto.review.ReviewDTO;
 import com.example.md6projecthndn.model.entity.property.*;
+import com.example.md6projecthndn.model.entity.user.User;
 import com.example.md6projecthndn.repository.booking.IStatusRepository;
 import com.example.md6projecthndn.repository.property.IPropertyImageRepository;
 import com.example.md6projecthndn.repository.property.IPropertyRepository;
@@ -304,5 +305,10 @@ public class PropertyService implements IPropertyService {
 
             return monthlyRevenues;
 
+    }
+
+    @Override
+    public List<Property> findByOwner(User host) {
+        return propertyRepository.findByOwnerUsername(host.getUsername());
     }
 }
