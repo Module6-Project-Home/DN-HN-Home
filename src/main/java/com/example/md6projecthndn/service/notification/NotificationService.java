@@ -25,7 +25,7 @@ public class NotificationService implements INotificationService {
     public void notifyOwnerOfCancellation(String guestName, String propertyName, User owner) {
         Notification notification = new Notification();
         notification.setOwner(owner);
-        notification.setMessage(guestName + " đã hủy thuê " + propertyName + " vào ngày " + LocalDate.now());
+        notification.setMessage(guestName + " đã hủy thuê " + propertyName + " vào lúc " );
         notification.setTimestamp(LocalDateTime.now());
         notificationRepository.save(notification);
     }
@@ -43,7 +43,7 @@ public class NotificationService implements INotificationService {
     public void notifyOwnerOfBooking(String guestName, String propertyName, User owner) {
         Notification notification = new Notification();
         notification.setOwner(owner);
-        notification.setMessage(guestName + " đã đặt thuê " + propertyName + " vào ngày " + LocalDate.now());
+        notification.setMessage(guestName + " đã đặt thuê " + propertyName + " vào lúc ");
         notification.setTimestamp(LocalDateTime.now());
         notificationRepository.save(notification);
     }
@@ -52,7 +52,7 @@ public class NotificationService implements INotificationService {
     public void notifyOwnerOfReview(String guestName, String propertyName, User owner) {
         Notification notification = new Notification();
         notification.setOwner(owner);
-        notification.setMessage(guestName + " đánh giá " + propertyName + " vào thời gian " + LocalDate.now());
+        notification.setMessage(guestName + " đánh giá " + propertyName + " vào lúc ");
         notification.setTimestamp(LocalDateTime.now());
         notificationRepository.save(notification);
     }

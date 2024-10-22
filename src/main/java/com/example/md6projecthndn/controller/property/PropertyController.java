@@ -221,22 +221,6 @@ public class PropertyController {
         return ResponseEntity.ok(updatedProperty);
     }
 
-//    @PutMapping("/change-status/{id}")
-//    public ResponseEntity<?> changePropertyStatus(@PathVariable Long id, @RequestParam Status.PROPERTY_STATUS newStatus) {
-//        Property property = propertyService.findById(id);
-//        if (property == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Property not found");
-//        }
-//
-//        Status.PROPERTY_STATUS currentStatus = property.getStatus().getName();
-//        if (currentStatus == Status.PROPERTY_STATUS.VACANT || currentStatus == Status.PROPERTY_STATUS.MAINTENANCE) {
-//            property.getStatus().setName(newStatus);
-//            propertyService.save(property);
-//            return ResponseEntity.ok("Property status updated successfully");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Property status can only be changed if it is VACANT or MAINTENANCE");
-//        }
-//    }
 
 
     @PutMapping("/change-status/{id}")
