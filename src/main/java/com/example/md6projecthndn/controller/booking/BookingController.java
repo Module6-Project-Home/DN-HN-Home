@@ -156,7 +156,7 @@ public class BookingController {
         List<Booking> bookings = bookingService.findByGuestIdAndPropertyIdAndBookingStatusId(user.getId(),property.getId(),3l);
 
         if(bookings == null || bookings.isEmpty()) {
-            return new ResponseEntity<>("Bạ chưa thuê nhà nên không để lại đánh giá", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bạn chưa thuê nhà nên không thể để lại đánh giá", HttpStatus.BAD_REQUEST);
         }
 
         String guest = review.getGuest().getUsername();

@@ -39,25 +39,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody User user) {
-        System.out.println("Received login request for username: " + user.getUsername());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-            System.out.println("Authentication successful: " + authentication.isAuthenticated());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtService.generateTokenLogin(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = userService.findByUsername(user.getUsername());
+            if(currentUser.getCurrentStatus().toString() == "SUSPENDED") {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             return ResponseEntity.ok(new JwtResponse(currentUser.getId(), jwt, userDetails.getUsername(), userDetails.getUsername(), userDetails.getAuthorities()));
         } catch (Exception e) {
-            System.out.println("Authentication failed: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thông tin đăng nhập không chính xác");
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
-        // Đối với JWT, không cần thực hiện gì ở server, chỉ cần xóa token ở client
         return ResponseEntity.ok("Đăng xuất thành công!");
     }
 
