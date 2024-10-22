@@ -122,7 +122,8 @@ public interface IPropertyRepository extends JpaRepository<Property, Long> {
             "JOIN users u ON p.owner_id = u.id " +
             "WHERE u.username = :username " +
             "AND b.check_out_date BETWEEN :start_date AND :end_date " +
-            "GROUP BY YEAR(b.check_out_date), MONTH(b.check_out_date)",
+            "GROUP BY YEAR(b.check_out_date), MONTH(b.check_out_date)" +
+            "ORDER BY year, month",
             nativeQuery = true)
     List<Object[]> getMonthlyRevenueByOwner(@Param("username") String username,
                                             @Param("start_date") Date startDate,
